@@ -49,6 +49,12 @@ bool Enter_DocGia(TheDocGia &docgia);
 void InsertNodeDocGia(TREE_DOCGIA &root, TheDocGia data);
 void ThemDocGia(TREE_DOCGIA &root);
 void write_DSDocGia(const TheDocGia &docgia, const char* filename = "txt\\DanhSachDocGia.txt");
+void read_DSDocGia(TREE_DOCGIA &root, const char* filename = "txt\\DanhSachDocGia.txt");
 int countNodeDocGia(TREE_DOCGIA root);
+void InsertTreeToArray(TREE_DOCGIA root, TheDocGia** Array, int& index);
+bool SortDocGiaByName(const TheDocGia* a, const TheDocGia* b);
+void QuickSortDocGia(TheDocGia* A[], int left, int right);
+void HienThiDanhSachDocGia(TheDocGia** Array, int page, int totalPages, int totalNode);
+void XuLyInDanhSachDocGia(TREE_DOCGIA &root, bool sortByName);
 
 #endif

@@ -11,7 +11,7 @@ using namespace std;
 #define ENTER 13
 
 
-void giaoDienInDanhSachDocGia(){
+void giaoDienInDanhSachDocGia(TREE_DOCGIA &root){
     clrscr();
     ShowCur(false);
     SetColor(14);
@@ -45,9 +45,9 @@ void giaoDienInDanhSachDocGia(){
         } else if (key == ENTER) {
             clrscr();
             if(chon == 0){ //Sap xep theo ten + ho
-                
+                XuLyInDanhSachDocGia(root, true);
             } else if(chon == 1){ // Sap xep theo ma the
-
+                XuLyInDanhSachDocGia(root, false);
             }
             else if(chon == soCN -1){
                 break;
@@ -104,7 +104,7 @@ void giaoDienQuanLyDocGia(TREE_DOCGIA &root) {
             if(chon == 0){
                 ThemDocGia(root);
             } else if(chon == 3){
-                giaoDienInDanhSachDocGia();
+                giaoDienInDanhSachDocGia(root);
             }
             else if(chon == soCN -1){
                 break;
@@ -180,5 +180,6 @@ int main(){
     fixConsoleWindowSize(100, 30);
     DS_DauSach dsDauSach;
     TREE_DOCGIA root = nullptr;
+    read_DSDocGia(root);
     menu(root);
 }
