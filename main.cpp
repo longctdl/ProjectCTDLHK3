@@ -103,7 +103,12 @@ void giaoDienQuanLyDocGia(TREE_DOCGIA &root) {
             clrscr();
             if(chon == 0){
                 ThemDocGia(root);
-            } else if(chon == 3){
+            } else if(chon == 1){ //Sua doc gia
+
+            } else if(chon == 2){ // xoa doc gia
+                
+            }
+            else if(chon == 3){
                 giaoDienInDanhSachDocGia(root);
             }
             else if(chon == soCN -1){
@@ -132,14 +137,14 @@ void menu(TREE_DOCGIA &root) {
         "Quan ly dau sach",
         "Muon sach",
         "Tra sach",
-        "Thong ke",
+        "Cac sach doc gia dang muon",
+        "Thong ke top 10 sach",
         "Thoat"
     };
     int chon = 0;
     int soCN = sizeof(chucNang) / sizeof(char*);
 
     while (true) {
-        // clrscr();
         ShowCur(false);
         for (int i = 0; i < soCN; ++i) {
             if (i == chon) {
@@ -161,6 +166,8 @@ void menu(TREE_DOCGIA &root) {
             if (chon == 0) {
                 giaoDienQuanLyDocGia(root);
             } else if (chon == soCN - 1) {
+                write_DSDocGia(root);
+                freeBST(root);
                 return;
             } else {
                 gotoxy(35, 8);

@@ -28,13 +28,12 @@ void write_MaThe(int dsMaThe[], int n, const char* filename){
 
 int get_MaThe(int dsMaThe[], int &n){
     if(n==0) return -1;
-    int mid = n/2;
-    int maThe = dsMaThe[mid];
-    for(int i = mid; i< n-1; i++){
+    int maThe = dsMaThe[0];
+    for(int i = 0; i< n-1; i++){
         dsMaThe[i] = dsMaThe[i+1];
     }
     n--;
-    write_MaThe(dsMaThe, n);
+    // write_MaThe(dsMaThe, n);
     return maThe;
 }
 
@@ -77,7 +76,7 @@ bool Enter_DocGia(TheDocGia &docgia) {
     while (true) {
         ten = inputName(INPUT_X, 9, 10, false);
         if(ten == INPUT_CANCELLED) return false;
-        if (!ho.empty()) break;
+        if (!ten.empty()) break;
         ThongBao("Ten khong duoc de trong. Vui long nhap lai!");
     }
 
@@ -104,13 +103,50 @@ bool Enter_DocGia(TheDocGia &docgia) {
     return true;
 }
 
-void InsertNodeDocGia(TREE_DOCGIA &root, TheDocGia data){
-    if(root == nullptr){
-        root = new NodeTheDocGia{data, nullptr, nullptr};
-        return;
+void collectDocGia(TREE_DOCGIA root, TheDocGia dsDocGia[], int& index){
+    if(root == nullptr) return;
+    collectDocGia(root->left, dsDocGia, index);
+    dsDocGia[index++] = root->data;
+    collectDocGia(root->right, dsDocGia, index);
+}
+
+TREE_DOCGIA buildTree(TheDocGia dsDocGia[], int left, int right){
+    if(left > right) return nullptr;
+    int mid = (left + right) / 2;
+    TREE_DOCGIA root = new NodeTheDocGia{dsDocGia[mid], nullptr, nullptr};
+
+    root->left = buildTree(dsDocGia, left, mid - 1);
+    root->right = buildTree(dsDocGia, mid + 1, right);
+
+    return root;
+}
+
+void freeBST(TREE_DOCGIA &root){
+    if(root == nullptr) return;
+    freeBST(root->left);
+    freeBST(root->right); 
+    delete root;
+    root = nullptr;
+}
+
+void sortDocGiaByMaThe(TheDocGia dsDocGia[], int left, int right) {
+    if(left >= right) return;
+    int i = left;
+    int j = right;
+
+    int mid = dsDocGia[(left + right) / 2].maThe;
+    while(i<=j){
+        while(dsDocGia[i].maThe < mid) i++;
+        while(dsDocGia[j].maThe > mid) j--;
+
+        if(i<=j){
+            swap(dsDocGia[i], dsDocGia[j]);
+            i++;
+            j--;
+        }
     }
-    if(data.maThe < root->data.maThe) InsertNodeDocGia(root->left, data);
-    else if(data.maThe > root->data.maThe) InsertNodeDocGia(root->right, data);
+    if(left < j) sortDocGiaByMaThe(dsDocGia, left, j);
+    if(i < right) sortDocGiaByMaThe(dsDocGia, i, right);
 }
 
 void ThemDocGia(TREE_DOCGIA &root){
@@ -121,66 +157,104 @@ void ThemDocGia(TREE_DOCGIA &root){
         return;
     }
 
-    int dsMaThe[MAX_MATHE];
+    int* dsMaThe = new int[MAX_MATHE];
     int n = read_MaThe(dsMaThe);
     int maThe = get_MaThe(dsMaThe, n);
 
     if(maThe == -1){
         ThongBao("DA HET MA THE, KHONG THE THEM DOC GIA MOI");
+        delete[] dsMaThe;
         return;
     }
 
     docgia.maThe = maThe;
-    InsertNodeDocGia(root, docgia);
-    write_DSDocGia(docgia);
+
+    int currentSize = countNodeDocGia(root);
+    TheDocGia* dsDocGia = new TheDocGia[currentSize + 1];
+
+    int index = 0;
+    collectDocGia(root, dsDocGia, index);
+    dsDocGia[index] = docgia;
+    index++;
+
+    sortDocGiaByMaThe(dsDocGia, 0, index -1);
+    freeBST(root);
+    root = buildTree(dsDocGia, 0, index -1);
+
+    write_MaThe(dsMaThe, n);
+
     SetColor(10);
     ThongBao("THEM DOC GIA THANH CONG!");
     SetColor(7);
+
+    delete[] dsMaThe;
+    delete[] dsDocGia;
 }
 
-void write_DSDocGia(const TheDocGia &docgia, const char* filename){
-    ofstream fout(filename, ios::app);
+void write_DSDocGia(TREE_DOCGIA root, const char* filename){
+    ofstream fout(filename);
     if(!fout.is_open()){
         ThongBao("Khong the mo file de ghi danh sach doc gia!");
         return;
     }
 
-    fout<< docgia.maThe << "\n";
-    fout<< docgia.ho << "\n";
-    fout<< docgia.ten << "\n";
-    fout<< docgia.gioitinh << "\n";
-    fout<< docgia.trangThai << "\n";
-    fout<< "\n";
+    int currentSize = countNodeDocGia(root);
+    TheDocGia* dsDocGia = new TheDocGia[currentSize];
 
+    int index = 0;
+    collectDocGia(root, dsDocGia, index);
+
+    for(int i = 0; i< index; i++){
+        fout<< dsDocGia[i].maThe << "\n" << dsDocGia[i].ho << "\n"
+            << dsDocGia[i].ten<< "\n" << dsDocGia[i].gioitinh << "\n"
+            << dsDocGia[i].trangThai << "\n\n";
+    }
     fout.close();
+    delete[] dsDocGia;
 }
 
-void read_DSDocGia(TREE_DOCGIA &root, const char* filename){
+void read_DSDocGia(TREE_DOCGIA &root, const char* filename) {
     ifstream fin(filename);
-    if(!fin.is_open()){
+    if (!fin.is_open()) {
         ThongBao("Khong the mo file danh sach doc gia!");
         return;
     }
 
-    while(true){
+    TheDocGia* dsDocGia = new TheDocGia[MAX_MATHE]; 
+
+    int count = 0;
+    string line;
+
+    while (count < MAX_MATHE) { 
         TheDocGia docgia;
-        string line;
 
-        if(!getline(fin, line)) break;
-        if(line.empty()) continue;
-        docgia.maThe = stoi(line);
+        if (!getline(fin, line)) break;
+        if (line.empty()) continue;
 
-        if(!getline(fin, docgia.ho)) break;
-        if(!getline(fin, docgia.ten)) break;
-        if(!getline(fin, docgia.gioitinh)) break;
-        if(!getline(fin, line)) break;
-        docgia.trangThai = stoi(line);
+        try {
+            docgia.maThe = stoi(line);
+
+            if (!getline(fin, docgia.ho)) break;
+            if (!getline(fin, docgia.ten)) break;
+            if (!getline(fin, docgia.gioitinh)) break;
+            if (!getline(fin, line)) break;
+            docgia.trangThai = stoi(line);
+        } catch (const exception& e) {
+            continue; 
+        }
+        
         docgia.dsMuonTra = nullptr;
-
         getline(fin, line);
-        InsertNodeDocGia(root, docgia);
+        
+        dsDocGia[count++] = docgia;
     }
     fin.close();
+
+    sortDocGiaByMaThe(dsDocGia, 0, count - 1);
+    freeBST(root);
+    root = buildTree(dsDocGia, 0, count - 1);
+
+    delete[] dsDocGia;
 }
 
 int countNodeDocGia(TREE_DOCGIA root){
@@ -255,8 +329,6 @@ void HienThiDanhSachDocGia(TheDocGia** Array, int page, int totalPages, int tota
     gotoxy(35, 7 + ITEMS_PER_PAGE); clreol();
     gotoxy(35, 7 + ITEMS_PER_PAGE); cout << "Trang " << page + 1 << " / " << totalPages;
 }
-
-
 
 void XuLyInDanhSachDocGia(TREE_DOCGIA &root, bool sortByName) {
     if (root == nullptr) {
