@@ -106,7 +106,7 @@ void giaoDienQuanLyDocGia(TREE_DOCGIA &root) {
             } else if(chon == 1){ //Sua doc gia
 
             } else if(chon == 2){ // xoa doc gia
-                
+                XoaDocGia(root);
             }
             else if(chon == 3){
                 giaoDienInDanhSachDocGia(root);

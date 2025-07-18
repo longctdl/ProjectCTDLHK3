@@ -60,4 +60,10 @@ void QuickSortDocGia(TheDocGia* A[], int left, int right);
 void HienThiDanhSachDocGia(TheDocGia** Array, int page, int totalPages, int totalNode);
 void XuLyInDanhSachDocGia(TREE_DOCGIA &root, bool sortByName);
 
+// Xoa Doc Gia
+TREE_DOCGIA Search(TREE_DOCGIA root, int maThe);
+TREE_DOCGIA findMin(TREE_DOCGIA root);
+TREE_DOCGIA Delete_DocGia(TREE_DOCGIA root, int maThe);
+void XoaDocGia(TREE_DOCGIA &root);
+
 #endif

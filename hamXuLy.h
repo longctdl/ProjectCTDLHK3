@@ -59,6 +59,34 @@ string inputName(int x, int y, int maxLen, bool allowSpace = false) {
     return chuanHoaTen(s);
 }
 
+string inputNumber(int x, int y, int maxLen) {
+    string s;
+    char c;
+    gotoxy(x, y);
+    
+    while (true) {
+        c = _getch();
+
+        if (c == 27) { // ESC key
+            return INPUT_CANCELLED;
+        }
+
+        if (c == 13) { // Enter key
+            break; // Stop input and return the string
+        } else if (c == 8 && !s.empty()) { // Backspace key
+            cout << "\b \b"; 
+            s.pop_back();
+        }
+        else if (isdigit(c) && s.length() < maxLen) {
+            s += c;
+            cout << c;
+        }
+        
+    }
+    
+    return s;
+}
+
 
 bool isValidGender(string s){
     for(char &c : s) c = tolower(c);
