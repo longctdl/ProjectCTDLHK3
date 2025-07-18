@@ -1,4 +1,4 @@
-#define NOMINMAX
+#define NOMINMAX 1
 #define byte _win_byte
 #include <windows.h>
 #undef byte
@@ -13,7 +13,6 @@ void gotoxy(short x, short y);
 void ShowCur(bool CursorVisibility);
 
 void clrscr();
-
 
 void resizeConsole(int width, int height);
 

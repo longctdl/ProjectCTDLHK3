@@ -1,0 +1,63 @@
+12333
+Conan
+ko ro
+45
+1999
+Truyen Tranh
+0
+312823
+
+12323
+Dragon Ball
+ko ro
+34
+1995
+Truyen Tranh
+0
+324470,448700,159329
+
+10234
+Khoa hoc vien tuong
+ko ro
+500
+2023
+Khoa Hoc
+0
+424333,558051,233669
+
+12345
+Lap Trinh C
+PTIT
+250
+2020
+Ky Thuat
+0
+281900,380814
+
+12344
+Lap Trinh Python
+PTIT
+300
+2024
+Ky Thuat
+0
+380814
+
+12341
+Lap Trinh Web
+PTIT
+280
+2025
+Ky Thuat
+0
+931212,404578,290583,570364
+
+12343
+Naruto
+Kishimoto
+50
+1999
+Truyen Tranh
+0
+976074,941468
+
