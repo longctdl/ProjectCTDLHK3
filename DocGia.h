@@ -51,9 +51,24 @@ int read_MaThe(int dsMaThe[], const char *filename = "txt\\MaTheDocGia.txt");
 void write_MaThe(int dsMaThe[], int n, const char *filename = "txt\\MaTheDocGia.txt");
 int get_MaThe(int dsMaThe[], int &n);
 bool Enter_DocGia(TheDocGia &docgia);
-void InsertNodeDocGia(TREE_DOCGIA &root, TheDocGia data);
+void collectDocGia(TREE_DOCGIA root, TheDocGia dsDocGia[], int &index);
+TREE_DOCGIA buildTree(TheDocGia dsDocGia[], int left, int right);
+void freeBST(TREE_DOCGIA &root);
+void sortDocGiaByMaThe(TheDocGia dsDocGia[], int left, int right);
 void ThemDocGia(TREE_DOCGIA &root);
-void write_DSDocGia(const TheDocGia &docgia, const char *filename = "txt\\DanhSachDocGia.txt");
+void write_DSDocGia(TREE_DOCGIA root, const char *filename = "txt\\DanhSachDocGia.txt");
+void read_DSDocGia(TREE_DOCGIA &root, const char *filename = "txt\\DanhSachDocGia.txt");
 int countNodeDocGia(TREE_DOCGIA root);
+void InsertTreeToArray(TREE_DOCGIA root, TheDocGia **Array, int &index);
+bool SortDocGiaByName(const TheDocGia *a, const TheDocGia *b);
+void QuickSortDocGia(TheDocGia *A[], int left, int right);
+void HienThiDanhSachDocGia(TheDocGia **Array, int page, int totalPages, int totalNode);
+void XuLyInDanhSachDocGia(TREE_DOCGIA &root, bool sortByName);
+
+// Xoa Doc Gia
+TREE_DOCGIA Search(TREE_DOCGIA root, int maThe);
+TREE_DOCGIA findMin(TREE_DOCGIA root);
+TREE_DOCGIA Delete_DocGia(TREE_DOCGIA root, int maThe);
+void XoaDocGia(TREE_DOCGIA &root);
 
 #endif

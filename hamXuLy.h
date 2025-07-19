@@ -25,10 +25,9 @@ string chuanHoaTen(string s){
 }
 
 
-string inputName(int x, int y, int maxLen, bool allowSpaceOnce = false) {
+string inputName(int x, int y, int maxLen, bool allowSpace = false) {
     string s;
     char c;
-    int spaceCount = 0;
     gotoxy(x, y);
     
     while (true) {
@@ -40,18 +39,52 @@ string inputName(int x, int y, int maxLen, bool allowSpaceOnce = false) {
 
         if (c == 13) break; // ENTER
         else if (c == 8 && !s.empty()) { //BACKSPACE
-            if (s.back() == ' ') spaceCount--;
-            s.pop_back();
             cout << "\b \b";
+            s.pop_back();
         }
-        else if ((isalpha(c) || (c == ' ' && allowSpaceOnce && spaceCount < 1)) && s.length() < maxLen) {
-            s += c;
-            if (c == ' ') spaceCount++;
+        else if(isalpha(c) && s.length() < maxLen){
+            s+= c;
             cout << c;
+        }
+        else if (c == ' ' && s.length() < maxLen) {
+            if(allowSpace){
+                if(!s.empty() && s.back() != ' '){
+                    s+= c;
+                    cout<<c;
+                }
+            }
         }
     }
     gotoxy(x+s.length(), y);
     return chuanHoaTen(s);
+}
+
+string inputNumber(int x, int y, int maxLen) {
+    string s;
+    char c;
+    gotoxy(x, y);
+    
+    while (true) {
+        c = _getch();
+
+        if (c == 27) { // ESC key
+            return INPUT_CANCELLED;
+        }
+
+        if (c == 13) { // Enter key
+            break; // Stop input and return the string
+        } else if (c == 8 && !s.empty()) { // Backspace key
+            cout << "\b \b"; 
+            s.pop_back();
+        }
+        else if (isdigit(c) && s.length() < maxLen) {
+            s += c;
+            cout << c;
+        }
+        
+    }
+    
+    return s;
 }
 
 

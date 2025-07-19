@@ -3,6 +3,8 @@
 #include "hamXuLy.h"
 #include <iostream>
 #include <fstream>
+#include <algorithm>
+#include <limits>
 
 using namespace std;
 const int MAX_MATHE = 10000;
@@ -27,13 +29,12 @@ void write_MaThe(int dsMaThe[], int n, const char* filename){
 
 int get_MaThe(int dsMaThe[], int &n){
     if(n==0) return -1;
-    int mid = n/2;
-    int maThe = dsMaThe[mid];
-    for(int i = mid; i< n-1; i++){
+    int maThe = dsMaThe[0];
+    for(int i = 0; i< n-1; i++){
         dsMaThe[i] = dsMaThe[i+1];
     }
     n--;
-    write_MaThe(dsMaThe, n);
+    // write_MaThe(dsMaThe, n);
     return maThe;
 }
 
@@ -67,16 +68,16 @@ bool Enter_DocGia(TheDocGia &docgia) {
     string ho, ten, gioitinh;
 
     while (true) {
-        ho = inputName(INPUT_X, 7, 20, true);
+        ho = inputName(INPUT_X, 7, 30, true);
         if(ho == INPUT_CANCELLED) return false;
         if (!ho.empty()) break;
         ThongBao("Ho khong duoc de trong. Vui long nhap lai!");
     }
 
     while (true) {
-        ten = inputName(INPUT_X, 9, 20, false);
+        ten = inputName(INPUT_X, 9, 10, false);
         if(ten == INPUT_CANCELLED) return false;
-        if (!ho.empty()) break;
+        if (!ten.empty()) break;
         ThongBao("Ten khong duoc de trong. Vui long nhap lai!");
     }
 
@@ -103,13 +104,50 @@ bool Enter_DocGia(TheDocGia &docgia) {
     return true;
 }
 
-void InsertNodeDocGia(TREE_DOCGIA &root, TheDocGia data){
-    if(root == nullptr){
-        root = new NodeTheDocGia{data, nullptr, nullptr};
-        return;
+void collectDocGia(TREE_DOCGIA root, TheDocGia dsDocGia[], int& index){
+    if(root == nullptr) return;
+    collectDocGia(root->left, dsDocGia, index);
+    dsDocGia[index++] = root->data;
+    collectDocGia(root->right, dsDocGia, index);
+}
+
+TREE_DOCGIA buildTree(TheDocGia dsDocGia[], int left, int right){
+    if(left > right) return nullptr;
+    int mid = (left + right) / 2;
+    TREE_DOCGIA root = new NodeTheDocGia{dsDocGia[mid], nullptr, nullptr};
+
+    root->left = buildTree(dsDocGia, left, mid - 1);
+    root->right = buildTree(dsDocGia, mid + 1, right);
+
+    return root;
+}
+
+void freeBST(TREE_DOCGIA &root){
+    if(root == nullptr) return;
+    freeBST(root->left);
+    freeBST(root->right); 
+    delete root;
+    root = nullptr;
+}
+
+void sortDocGiaByMaThe(TheDocGia dsDocGia[], int left, int right) {
+    if(left >= right) return;
+    int i = left;
+    int j = right;
+
+    int mid = dsDocGia[(left + right) / 2].maThe;
+    while(i<=j){
+        while(dsDocGia[i].maThe < mid) i++;
+        while(dsDocGia[j].maThe > mid) j--;
+
+        if(i<=j){
+            swap(dsDocGia[i], dsDocGia[j]);
+            i++;
+            j--;
+        }
     }
-    if(data.maThe < root->data.maThe) InsertNodeDocGia(root->left, data);
-    else if(data.maThe > root->data.maThe) InsertNodeDocGia(root->right, data);
+    if(left < j) sortDocGiaByMaThe(dsDocGia, left, j);
+    if(i < right) sortDocGiaByMaThe(dsDocGia, i, right);
 }
 
 void ThemDocGia(TREE_DOCGIA &root){
@@ -120,70 +158,448 @@ void ThemDocGia(TREE_DOCGIA &root){
         return;
     }
 
-    int dsMaThe[MAX_MATHE];
+    int* dsMaThe = new int[MAX_MATHE];
     int n = read_MaThe(dsMaThe);
     int maThe = get_MaThe(dsMaThe, n);
 
     if(maThe == -1){
         ThongBao("DA HET MA THE, KHONG THE THEM DOC GIA MOI");
+        delete[] dsMaThe;
         return;
     }
 
     docgia.maThe = maThe;
-    InsertNodeDocGia(root, docgia);
-    write_DSDocGia(docgia);
+
+    int currentSize = countNodeDocGia(root);
+    TheDocGia* dsDocGia = new TheDocGia[currentSize + 1];
+
+    int index = 0;
+    collectDocGia(root, dsDocGia, index);
+    dsDocGia[index] = docgia;
+    index++;
+
+    sortDocGiaByMaThe(dsDocGia, 0, index -1);
+    freeBST(root);
+    root = buildTree(dsDocGia, 0, index -1);
+
+    write_MaThe(dsMaThe, n);
+
     SetColor(10);
     ThongBao("THEM DOC GIA THANH CONG!");
     SetColor(7);
+
+    delete[] dsMaThe;
+    delete[] dsDocGia;
 }
 
-void write_DSDocGia(const TheDocGia &docgia, const char* filename){
-    ofstream fout(filename, ios::app);
+void write_DSDocGia(TREE_DOCGIA root, const char* filename){
+    ofstream fout(filename);
     if(!fout.is_open()){
         ThongBao("Khong the mo file de ghi danh sach doc gia!");
         return;
     }
 
-    fout<< docgia.maThe << "\n";
-    fout<< docgia.ho << "\n";
-    fout<< docgia.ten << "\n";
-    fout<< docgia.gioitinh << "\n";
-    fout<< docgia.trangThai << "\n";
-    fout<< "\n";
+    int currentSize = countNodeDocGia(root);
+    TheDocGia* dsDocGia = new TheDocGia[currentSize];
 
+    int index = 0;
+    collectDocGia(root, dsDocGia, index);
+
+    for(int i = 0; i< index; i++){
+        fout<< dsDocGia[i].maThe << "\n" << dsDocGia[i].ho << "\n"
+            << dsDocGia[i].ten<< "\n" << dsDocGia[i].gioitinh << "\n"
+            << dsDocGia[i].trangThai << "\n\n";
+    }
     fout.close();
+    delete[] dsDocGia;
 }
 
-void read_DSDocGia(TREE_DOCGIA &root, const char* filename){
+void read_DSDocGia(TREE_DOCGIA &root, const char* filename) {
     ifstream fin(filename);
-    if(!fin.is_open()){
+    if (!fin.is_open()) {
         ThongBao("Khong the mo file danh sach doc gia!");
         return;
     }
 
-    while(!fin.eof()){
+    TheDocGia* dsDocGia = new TheDocGia[MAX_MATHE]; 
+
+    int count = 0;
+    string line;
+
+    while (count < MAX_MATHE) { 
         TheDocGia docgia;
-        string maTheStr, trangThaiStr;
 
-        getline(fin, maTheStr);
-        if(maTheStr.empty()) break;
-        docgia.maThe = stoi(maTheStr);
+        if (!getline(fin, line)) break;
+        if (line.empty()) continue;
 
-        getline(fin, docgia.ho);
-        getline(fin, docgia.ten);
-        getline(fin, docgia.gioitinh);
-        getline(fin, trangThaiStr);
-        docgia.trangThai = stoi(trangThaiStr);
+        try {
+            docgia.maThe = stoi(line);
+
+            if (!getline(fin, docgia.ho)) break;
+            if (!getline(fin, docgia.ten)) break;
+            if (!getline(fin, docgia.gioitinh)) break;
+            if (!getline(fin, line)) break;
+            docgia.trangThai = stoi(line);
+        } catch (const exception& e) {
+            continue; 
+        }
+        
         docgia.dsMuonTra = nullptr;
-
-        string emptyLine;
-        getline(fin, emptyLine);
-        InsertNodeDocGia(root, docgia);
+        getline(fin, line);
+        
+        dsDocGia[count++] = docgia;
     }
     fin.close();
+
+    sortDocGiaByMaThe(dsDocGia, 0, count - 1);
+    freeBST(root);
+    root = buildTree(dsDocGia, 0, count - 1);
+
+    delete[] dsDocGia;
 }
 
 int countNodeDocGia(TREE_DOCGIA root){
     if(root == nullptr) return 0;
     return 1 + countNodeDocGia(root->left) + countNodeDocGia(root->right);
+}
+
+void InsertTreeToArray(TREE_DOCGIA root, TheDocGia** Array, int& index){
+    if(root == nullptr) return;
+    InsertTreeToArray(root->left, Array, index);
+    Array[index] = &(root->data);
+    index++;
+    InsertTreeToArray(root->right, Array, index);
+}
+
+bool SortDocGiaByName(const TheDocGia* a, const TheDocGia* b){
+    if(a->ten != b->ten) return a->ten < b->ten;
+    return a->ho < b->ho;
+}
+
+void QuickSortDocGia(TheDocGia* A[], int left, int right){
+    int i = left;
+    int j = right;
+
+    TheDocGia* mid = A[(left + right) / 2];
+    while(i<=j){
+        while(SortDocGiaByName(A[i], mid)) i++; //A[i] < mid
+        while(SortDocGiaByName(mid, A[j])) j--; //A[j] > mid
+
+        if(i<=j){
+            swap(A[i], A[j]);
+            i++;
+            j--;
+        }
+    }
+
+    if(left < j) QuickSortDocGia(A,left,j);
+    if(i < right) QuickSortDocGia(A, i, right);
+}
+
+void HienThiDanhSachDocGia(TheDocGia** Array, int page, int totalPages, int totalNode) {
+    const int ITEMS_PER_PAGE = 15;
+    
+    for(int i = 0; i < ITEMS_PER_PAGE + 2; i++){
+        gotoxy(4, 6 + i);
+        clreol();
+        cout<<string(80, ' ');
+    }
+
+    int startIndex = page * ITEMS_PER_PAGE;
+    int endIndex = min(startIndex + ITEMS_PER_PAGE, totalNode);
+    
+    for (int i = startIndex; i < endIndex; ++i) {
+        int row = 6 + (i - startIndex);
+        gotoxy(4, row); cout << char(179);
+        cout << " " << left << setw(5) << i + 1 << char(179);
+        cout << " " << left << setw(9) << Array[i]->maThe << char(179);
+        string hoTen = Array[i]->ho + " " + Array[i]->ten;
+        cout << " " << left << setw(29) << hoTen << char(179);
+        cout << " " << left << setw(11) << Array[i]->gioitinh << char(179);
+        string trangThai = (Array[i]->trangThai == 1) ? "Hoat dong" : "Bi khoa";
+        cout << " " << left << setw(14) << trangThai << char(179);
+    }
+    
+    int soDongDaIn = endIndex - startIndex;
+    int viTriChanBangY = 6 + soDongDaIn;
+    gotoxy(4, viTriChanBangY);
+    cout << char(192) << string(6, char(196)) << char(193) << string(10, char(196)) << char(193)
+         << string(30, char(196)) << char(193) << string(12, char(196)) << char(193)
+         << string(15, char(196)) << char(217);
+
+    gotoxy(35, 7 + ITEMS_PER_PAGE); clreol();
+    gotoxy(35, 7 + ITEMS_PER_PAGE); cout << "Trang " << page + 1 << " / " << totalPages;
+}
+
+void XuLyInDanhSachDocGia(TREE_DOCGIA &root, bool sortByName) {
+    if (root == nullptr) {
+        ThongBao("Danh sach doc gia trong!");
+        return;
+    }
+    int totalNode = countNodeDocGia(root);
+    TheDocGia** Array = new TheDocGia*[totalNode];
+    int index = 0;
+    InsertTreeToArray(root, Array, index);
+    if (sortByName) { 
+        QuickSortDocGia(Array, 0, totalNode -1); 
+    }
+
+    clrscr();
+    SetColor(14);
+    CreateBoxDouble(40, 1, "   DANH SACH DOC GIA   ", 25);
+    cout << setfill(' ');
+    SetColor(7);
+
+    // Vẽ phần đầu bảng (Header)
+    gotoxy(4, 3);
+    cout << char(218) << string(6, char(196)) << char(194) << string(10, char(196)) << char(194)
+         << string(30, char(196)) << char(194) << string(12, char(196)) << char(194)
+         << string(15, char(196)) << char(191);
+    
+    gotoxy(4, 4);
+    cout << char(179) << " " << left << setw(5) << "STT" << char(179) << " " << left << setw(9) << "Ma The"
+         << char(179) << " " << left << setw(29) << "Ho va Ten" << char(179) << " " << left << setw(11) << "Gioi Tinh"
+         << char(179) << " " << left << setw(14) << "Trang Thai" << char(179);
+    
+    gotoxy(4, 5); // Dòng kẻ ngay dưới header
+    cout << char(195) << string(6, char(196)) << char(197) << string(10, char(196)) << char(197)
+         << string(30, char(196)) << char(197) << string(12, char(196)) << char(197)
+         << string(15, char(196)) << char(180);
+
+    
+    const int ITEMS_PER_PAGE = 15;
+    int currentPage = 0;
+    int totalPages = (totalNode - 1) / ITEMS_PER_PAGE + 1;
+    HienThiDanhSachDocGia(Array, currentPage, totalPages, totalNode);
+
+    SetColor(8);
+    gotoxy(20, 8 + ITEMS_PER_PAGE); cout << "Nhan phim mui ten [<-] [->] de chuyen trang, [ESC] de thoat.";
+    SetColor(7);
+    
+    while(true){
+        ShowCur(false);
+        int key = _getch();
+        if (key == 224) {
+            key = _getch();
+            if (key == 75 && currentPage > 0) { // Trái
+                currentPage--;
+                HienThiDanhSachDocGia(Array, currentPage, totalPages, totalNode);
+            } else if (key == 77 && currentPage < totalPages - 1) { // Phải
+                currentPage++;
+                HienThiDanhSachDocGia(Array, currentPage, totalPages, totalNode);
+            }
+        } else if (key == 27) { // ESC
+            
+            break;
+        }
+    }
+    cout<< right;
+    delete[] Array;
+}
+
+TREE_DOCGIA Search(TREE_DOCGIA root, int maThe){
+    TREE_DOCGIA p;
+    p = root;
+    while(p != nullptr && p->data.maThe != maThe){
+        if(maThe < p->data.maThe) p = p->left;
+        else p = p->right;
+    }
+    return p;
+}
+
+TREE_DOCGIA findMin(TREE_DOCGIA root){
+    while(root->left != nullptr) root = root->left;
+    return root;
+}
+
+TREE_DOCGIA Delete_DocGia(TREE_DOCGIA root, int maThe){
+    if(root == nullptr) return nullptr;
+    if(maThe < root->data.maThe) root->left = Delete_DocGia(root->left, maThe);
+    else if(maThe > root->data.maThe) root->right = Delete_DocGia(root->right, maThe);
+    else{
+        if(root->data.dsMuonTra != nullptr){
+            ThongBao("Doc gia dang muon sach, khong thr xoa!");
+            return root;
+        }
+        if(root->left == nullptr){
+            TREE_DOCGIA tmp = root->right;
+            delete root;
+            return tmp;
+        } else if(root->right == nullptr){
+            TREE_DOCGIA tmp = root->left;
+            delete root;
+            return tmp;
+        } else {
+            TREE_DOCGIA minNode = findMin(root->right);
+            root->data = minNode->data;
+            root->right = Delete_DocGia(root->right, minNode->data.maThe);
+        }
+    }
+    return root;
+}
+
+void XoaDocGia(TREE_DOCGIA &root) {
+    TheDocGia* tempDocGiaArray = nullptr;
+    TheDocGia** displayArray = nullptr;
+
+    clrscr();
+    SetColor(14);
+    CreateBoxDouble(40, 1, "   XOA DOC GIA   ", 25);
+    cout << setfill(' ');
+    SetColor(7);
+
+    gotoxy(4, 3);
+    cout << char(218) << string(6, char(196)) << char(194) << string(10, char(196)) << char(194)
+         << string(30, char(196)) << char(194) << string(12, char(196)) << char(194)
+         << string(15, char(196)) << char(191);
+
+    gotoxy(4, 4);
+    cout << char(179) << " " << left << setw(5) << "STT" << char(179) << " " << left << setw(9) << "Ma The"
+         << char(179) << " " << left << setw(29) << "Ho va Ten" << char(179) << " " << left << setw(11) << "Gioi Tinh"
+         << char(179) << " " << left << setw(14) << "Trang Thai" << char(179);
+
+    gotoxy(4, 5);
+    cout << char(195) << string(6, char(196)) << char(197) << string(10, char(196)) << char(197)
+         << string(30, char(196)) << char(197) << string(12, char(196)) << char(197)
+         << string(15, char(196)) << char(180);
+
+    const int ITEMS_PER_PAGE = 15;
+
+    while (true) {
+        int totalNode = countNodeDocGia(root);
+
+        if (tempDocGiaArray != nullptr) {
+            delete[] tempDocGiaArray;
+            tempDocGiaArray = nullptr;
+        }
+        if (displayArray != nullptr) {
+            delete[] displayArray;
+            displayArray = nullptr;
+        }
+
+        if (totalNode == 0) {
+            for (int i = 6; i <= 6 + ITEMS_PER_PAGE + 5; ++i) {
+                gotoxy(1, i);
+                clreol();
+            }
+            SetColor(7);
+            ThongBao("Danh sach doc gia rong. Nhan ESC de thoat.");
+            
+            while (_getch() != 27) {} 
+            break;
+        }
+
+        tempDocGiaArray = new TheDocGia[totalNode];
+        int tempIndex = 0;
+        collectDocGia(root, tempDocGiaArray, tempIndex);
+
+        displayArray = new TheDocGia*[totalNode];
+        for (int i = 0; i < totalNode; ++i) {
+            displayArray[i] = &tempDocGiaArray[i];
+        }
+
+        int currentPage = 0;
+        int totalPages = (totalNode - 1) / ITEMS_PER_PAGE + 1;
+
+        for (int i = 6; i <= 8 + ITEMS_PER_PAGE + 5; ++i) {
+            gotoxy(1, i);
+            clreol();
+        }
+
+        HienThiDanhSachDocGia(displayArray, currentPage, totalPages, totalNode);
+
+        SetColor(8);
+        gotoxy(20, 8 + ITEMS_PER_PAGE); cout << "Nhan phim mui ten [<-] [->] de chuyen trang, [ESC] de thoat.";
+
+        SetColor(7);
+        gotoxy(90, 6); cout << "Nhap ma the can xoa: ";
+        ShowCur(true);
+
+        int maTheToDelete = -1;
+        bool inputCancelled = false;
+        string inputStr;
+        while (true) {
+
+            inputStr = inputNumber(90 + string("Nhap ma the can xoa: ").length(), 6, 10);
+            
+            if (inputStr == INPUT_CANCELLED) {
+                inputCancelled = true;
+                break;
+            }
+            
+            if (inputStr.empty()) {
+                continue; 
+            }
+
+            try {
+                maTheToDelete = stoi(inputStr);
+                break;
+            } catch (const exception& e) {
+                ThongBao("Ma the khong hop le. Vui long nhap so.");
+            }
+        }
+        
+        if (inputCancelled) {
+            SetColor(10);
+            ThongBao("DA HUY THAO TAC XOA DOC GIA");
+            SetColor(7);
+            break;
+        }
+
+        TREE_DOCGIA p = Search(root, maTheToDelete);
+        if (p == nullptr) {
+            ThongBao("Khong tim thay doc gia co ma the nay!");
+            continue; 
+        }
+
+        for(int i = 6; i <= 17 + ITEMS_PER_PAGE + 1; ++i) { 
+            gotoxy(90, i); 
+            clreol();
+        }
+        
+        gotoxy(90, 9);  cout << "Thong tin doc gia:";
+        gotoxy(90, 10); cout << "Ma the     : " << p->data.maThe;
+        gotoxy(90, 11); cout << "Ho va ten  : " << p->data.ho << " " << p->data.ten;
+        gotoxy(90, 12); cout << "Gioi tinh  : " << p->data.gioitinh;
+        gotoxy(90, 13); cout << "Trang thai : " << (p->data.trangThai == 1 ? "Hoat dong" : "Bi khoa");
+        gotoxy(90, 15); cout << "Ban co chac chan muon xoa doc gia nay? (y/n): ";
+
+        char confirmChar;
+        cin >> confirmChar;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        if (confirmChar == 'y' || confirmChar == 'Y') {
+            root = Delete_DocGia(root, maTheToDelete);
+
+            int* dsMaThe = new int[MAX_MATHE]; 
+            int n = read_MaThe(dsMaThe);
+
+            if (n < MAX_MATHE) {
+                dsMaThe[n++] = maTheToDelete;
+                write_MaThe(dsMaThe, n);
+            } else {
+                ThongBao("Canh bao: Danh sach ma the hien dang day. Ma the da xoa khong the tai su dung.");
+            }
+            delete[] dsMaThe; 
+
+            write_DSDocGia(root);
+
+            SetColor(10);
+            ThongBao("XOA DOC GIA THANH CONG!");
+            SetColor(7);
+        } else {
+            SetColor(10);
+            ThongBao("DA HUY THAO TAC XOA DOC GIA");
+            SetColor(7);
+        }
+    }
+
+    ShowCur(false); 
+    if (tempDocGiaArray != nullptr) {
+        delete[] tempDocGiaArray;
+    }
+    if (displayArray != nullptr) {
+        delete[] displayArray;
+    }
+    cout << right;
 }

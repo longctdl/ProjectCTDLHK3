@@ -10,7 +10,7 @@ using namespace std;
 #define DOWN 80
 #define ENTER 13
 
-void giaoDienInDanhSachDocGia()
+void giaoDienInDanhSachDocGia(TREE_DOCGIA &root)
 {
     clrscr();
     ShowCur(false);
@@ -59,9 +59,11 @@ void giaoDienInDanhSachDocGia()
             clrscr();
             if (chon == 0)
             { // Sap xep theo ten + ho
+                XuLyInDanhSachDocGia(root, true);
             }
             else if (chon == 1)
             { // Sap xep theo ma the
+                XuLyInDanhSachDocGia(root, false);
             }
             else if (chon == soCN - 1)
             {
@@ -137,9 +139,27 @@ void giaoDienQuanLyDocGia(TREE_DOCGIA &root)
             {
                 ThemDocGia(root);
             }
+            else if (chon == 1)
+            { // Sua doc gia
+            }
+            else if (chon == 2)
+            { // xoa doc gia
+                XoaDocGia(root);
+            }
             else if (chon == 3)
             {
-                giaoDienInDanhSachDocGia();
+                giaoDienInDanhSachDocGia(root);
+            }
+            else if (chon == 1)
+            { // Sua doc gia
+            }
+            else if (chon == 2)
+            { // xoa doc gia
+                XoaDocGia(root);
+            }
+            else if (chon == 3)
+            {
+                giaoDienInDanhSachDocGia(root);
             }
             else if (chon == soCN - 1)
             {
@@ -306,10 +326,6 @@ void menu(TREE_DOCGIA &root, DS_DauSach *dsDauSach)
             {
                 giaoDienQuanLyDocGia(root);
             }
-            else if (chon == 1)
-            {
-                giaoDienQuanLyDauSach(dsDauSach);
-            }
             else if (chon == soCN - 1)
             {
                 return;
@@ -343,5 +359,6 @@ int main()
     DS_DauSach *ds = new DS_DauSach;
 
     TREE_DOCGIA root = nullptr;
-    menu(root, ds);
+    read_DSDocGia(root);
+    menu(root);
 }
