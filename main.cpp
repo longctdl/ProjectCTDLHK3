@@ -150,17 +150,6 @@ void giaoDienQuanLyDocGia(TREE_DOCGIA &root)
             {
                 giaoDienInDanhSachDocGia(root);
             }
-            else if (chon == 1)
-            { // Sua doc gia
-            }
-            else if (chon == 2)
-            { // xoa doc gia
-                XoaDocGia(root);
-            }
-            else if (chon == 3)
-            {
-                giaoDienInDanhSachDocGia(root);
-            }
             else if (chon == soCN - 1)
             {
                 break;
@@ -326,8 +315,14 @@ void menu(TREE_DOCGIA &root, DS_DauSach *dsDauSach)
             {
                 giaoDienQuanLyDocGia(root);
             }
+            else if (chon == 1)
+            {
+                giaoDienQuanLyDauSach(dsDauSach);
+            }
             else if (chon == soCN - 1)
             {
+                write_DSDocGia(root);
+                freeBST(root);
                 return;
             }
             else
@@ -360,5 +355,5 @@ int main()
 
     TREE_DOCGIA root = nullptr;
     read_DSDocGia(root);
-    menu(root);
+    menu(root, ds);
 }
