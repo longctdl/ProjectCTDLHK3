@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include "Sach.h"
+#include "hamXuLy.h"
 
 struct Date{
     int ngay;
@@ -69,5 +70,11 @@ void XoaDocGia(TREE_DOCGIA &root);
 // Sua Doc Gia
 void SuaDocGia(TREE_DOCGIA &root);
 void HienThiFormSua(int x, int y, const string &ho, const string &ten, const string &gioitinh, int trangthai, int currentField);
+
+// Muon tra
+void MuonSachFunc(TREE_DOCGIA &dsDocGia, DS_DauSach &dsDauSach);
+void TraSachFunc(TREE_DOCGIA &dsDocGia, DS_DauSach &dsDauSach);
+void HienThiSachDocGiaDangMuon(const TheDocGia* docGia);
+bool kiemTraQuaHan(Date ngayMuon, Date ngayHienTai);
 
 #endif

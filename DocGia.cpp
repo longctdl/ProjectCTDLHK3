@@ -5,9 +5,23 @@
 #include <fstream>
 #include <algorithm>
 #include <limits>
+#include <vector>
+#include <string>
+#include <sstream> 
+#include <ctime>
 
 using namespace std;
 const int MAX_MATHE = 10000;
+
+Date getCurrentDate() {
+    time_t now = time(0);
+    tm* ltm = localtime(&now);
+    Date currentDate;
+    currentDate.ngay = ltm->tm_mday;
+    currentDate.thang = 1 + ltm->tm_mon;
+    currentDate.nam = 1900 + ltm->tm_year;
+    return currentDate;
+}
 
 int read_MaThe(int dsMaThe[], const char* filename){
     ifstream fin(filename);
@@ -936,4 +950,288 @@ void HienThiFormSua(int x, int y, const string &ho, const string &ten, const str
     gotoxy(x + 3, y + 12); cout << "F2        : Luu tat ca thay doi";
     gotoxy(x + 3, y + 13); cout << "ESC       : Huy bo";
     SetColor(7);
+}
+
+bool kiemTraQuaHan(Date ngayMuon, Date ngayHienTai) {
+    // Convert Date to days since a common epoch for easier comparison
+    // Assuming a simple calculation for demonstration. For real-world,
+    // consider leap years and different month lengths.
+    auto dateToDays = [](Date d) {
+        return d.nam * 365 + d.thang * 30 + d.ngay;
+    };
+
+    int daysMuon = dateToDays(ngayMuon);
+    int daysHienTai = dateToDays(ngayHienTai);
+
+    return (daysHienTai - daysMuon) > 7;
+}
+
+void HienThiSachDocGiaDangMuon(const TheDocGia* docGia) {
+    clrscr();
+    SetColor(14);
+    CreateBoxDouble(40, 1, "SACH DOC GIA DANG MUON", 30);
+    SetColor(7);
+    
+    gotoxy(5, 4);
+    cout << "Ma the: " << docGia->maThe << " - Ho va Ten: " << docGia->ho << " " << docGia->ten;
+
+    gotoxy(5, 6);
+    cout << char(218) << string(10, char(196)) << char(194) << string(15, char(196)) << char(194)
+         << string(15, char(196)) << char(194) << string(15, char(196)) << char(191);
+    gotoxy(5, 7);
+    cout << char(179) << " STT      " << char(179) << " MA SACH       " << char(179) << " NGAY MUON     "
+         << char(179) << " TRANG THAI    " << char(179);
+    gotoxy(5, 8);
+    cout << char(195) << string(10, char(196)) << char(197) << string(15, char(196)) << char(197)
+         << string(15, char(196)) << char(197) << string(15, char(196)) << char(180);
+
+    PTRMT current = docGia->dsMuonTra;
+    int stt = 1;
+    int y = 9;
+    bool hasBorrowed = false;
+
+    if (current == nullptr) {
+        gotoxy(5, y);
+        cout << "Doc gia nay khong muon cuon sach nao.";
+    } else {
+        while (current != nullptr) {
+            if (current->data.trangThai == 0) { // Sách đang mượn
+                hasBorrowed = true;
+                gotoxy(5, y);
+                cout << char(179) << " " << left << setw(8) << stt++ << char(179);
+                cout << " " << left << setw(13) << current->data.maSach << char(179);
+                cout << " " << left << setw(2) << current->data.ngayMuon.ngay << "/" << setw(2) << current->data.ngayMuon.thang << "/" << setw(6) << current->data.ngayMuon.nam << char(179);
+                string trangThaiStr = "Dang muon";
+                if (kiemTraQuaHan(current->data.ngayMuon, getCurrentDate())) {
+                    trangThaiStr += " (Qua han)";
+                    SetColor(12); // Red for overdue
+                }
+                cout << " " << left << setw(13) << trangThaiStr << char(179);
+                SetColor(7); // Reset color
+                y++;
+            }
+            current = current->next;
+        }
+        if (!hasBorrowed) {
+            gotoxy(5, y);
+            cout << "Doc gia nay khong muon cuon sach nao.";
+        }
+    }
+
+    gotoxy(5, y + 1);
+    cout << char(192) << string(10, char(196)) << char(193) << string(15, char(196)) << char(193)
+         << string(15, char(196)) << char(193) << string(15, char(196)) << char(217);
+
+    gotoxy(10, y + 3);
+    ThongBao("Nhan phim bat ky de quay lai...");
+    _getch();
+}
+
+
+void MuonSachFunc(TREE_DOCGIA &dsDocGia, DS_DauSach &dsDauSach) {
+    clrscr();
+    SetColor(14);
+    CreateBoxDouble(40, 2, "   MUON SACH   ", 20);
+    SetColor(7);
+
+    gotoxy(10, 5); cout << "Nhap ma the doc gia: ";
+    string inputMaThe = inputNumber(30, 5, 10);
+    if (inputMaThe == INPUT_CANCELLED || inputMaThe.empty()) {
+        ThongBao("Huy thao tac muon sach.");
+        return;
+    }
+    int maThe = stoi(inputMaThe);
+
+    TREE_DOCGIA docGiaNode = Search(dsDocGia, maThe);
+    if (docGiaNode == nullptr) {
+        ThongBao("Khong tim thay doc gia voi ma the nay.");
+        return;
+    }
+
+    TheDocGia* docGia = &(docGiaNode->data);
+
+    if (docGia->trangThai == 0) {
+        ThongBao("The doc gia da bi khoa. Khong the muon sach.");
+        return;
+    }
+    
+    // Kiem tra so luong sach dang muon
+    int countBorrowed = 0;
+    bool hasOverdue = false;
+    Date currentDate = getCurrentDate();
+    PTRMT currentMT = docGia->dsMuonTra;
+    while (currentMT != nullptr) {
+        if (currentMT->data.trangThai == 0) { // Dang muon
+            countBorrowed++;
+            if (kiemTraQuaHan(currentMT->data.ngayMuon, currentDate)) {
+                hasOverdue = true;
+            }
+        }
+        currentMT = currentMT->next;
+    }
+
+    if (countBorrowed >= 3) {
+        ThongBao("Doc gia da muon toi da 3 cuon sach. Khong the muon them.");
+        return;
+    }
+    if (hasOverdue) {
+        ThongBao("Doc gia dang co sach qua han. Khong the muon sach.");
+        return;
+    }
+
+    HienThiSachDocGiaDangMuon(docGia);
+    gotoxy(10, 10); // Adjust Y position based on previous display
+    cout << "Nhap ma sach muon: ";
+    string inputMaSach = inputNumber(30, 10, 10);
+    if (inputMaSach == INPUT_CANCELLED || inputMaSach.empty()) {
+        ThongBao("Huy thao tac muon sach.");
+        return;
+    }
+    int maSachMuon = stoi(inputMaSach);
+
+    // Tìm kiếm sách trong DS_DauSach
+    DauSach* foundDauSach = nullptr;
+    NodeSach* foundSachCopy = nullptr;
+
+    for (int i = 0; i < dsDauSach.soluong; ++i) {
+        DauSach& ds = dsDauSach.nodes[i];
+        PTRDMS currentSach = ds.dms;
+        while (currentSach != nullptr) {
+            if (currentSach->data.maSach == maSachMuon) {
+                foundSachCopy = currentSach;
+                foundDauSach = &ds;
+                break;
+            }
+            currentSach = currentSach->next;
+        }
+        if (foundSachCopy != nullptr) break;
+    }
+
+    if (foundSachCopy == nullptr) {
+        ThongBao("Khong tim thay cuon sach voi ma nay.");
+        return;
+    }
+
+    if (foundSachCopy->data.trangThai != 0) { // 0: cho muon duoc
+        string statusStr = "";
+        if (foundSachCopy->data.trangThai == 1) statusStr = "da co doc gia muon.";
+        else if (foundSachCopy->data.trangThai == 2) statusStr = "da thanh ly.";
+        ThongBao(("Sach nay " + statusStr + " Khong the muon.").c_str());
+        return;
+    }
+
+    // Kiểm tra sách này đã được độc giả này mượn và chưa trả chưa
+    currentMT = docGia->dsMuonTra;
+    while(currentMT != nullptr){
+        if(currentMT->data.maSach == maSachMuon && currentMT->data.trangThai == 0){
+            ThongBao("Doc gia da muon cuon sach nay va chua tra.");
+            return;
+        }
+        currentMT = currentMT->next;
+    }
+
+    // Tiến hành cho mượn
+    foundSachCopy->data.trangThai = 1; // Đặt trạng thái sách là đã cho mượn
+    foundDauSach->slmuon++; // Tăng số lượng sách đã mượn của đầu sách
+
+    // Thêm vào danh sách mượn trả của độc giả
+    PTRMT newMuonTra = new NodeMT;
+    newMuonTra->data.maSach = maSachMuon;
+    newMuonTra->data.ngayMuon = getCurrentDate();
+    newMuonTra->data.ngayTra = {0,0,0}; // Chưa trả
+    newMuonTra->data.trangThai = 0; // Đang mượn
+    newMuonTra->next = docGia->dsMuonTra;
+    docGia->dsMuonTra = newMuonTra;
+
+    ThongBao("Muon sach thanh cong!");
+    write_DSDocGia(dsDocGia); // Ghi lại thông tin độc giả (bao gồm dsMuonTra)
+    ghiDanhSachDauSachRaFile(dsDauSach, "txt\\DanhSachDauSach.txt"); // Ghi lại thông tin đầu sách
+    _getch();
+}
+
+void TraSachFunc(TREE_DOCGIA &dsDocGia, DS_DauSach &dsDauSach) {
+    clrscr();
+    SetColor(14);
+    CreateBoxDouble(40, 2, "   TRA SACH   ", 20);
+    SetColor(7);
+
+    gotoxy(10, 5); cout << "Nhap ma the doc gia: ";
+    string inputMaThe = inputNumber(30, 5, 10);
+    if (inputMaThe == INPUT_CANCELLED || inputMaThe.empty()) {
+        ThongBao("Huy thao tac tra sach.");
+        return;
+    }
+    int maThe = stoi(inputMaThe);
+
+    TREE_DOCGIA docGiaNode = Search(dsDocGia, maThe);
+    if (docGiaNode == nullptr) {
+        ThongBao("Khong tim thay doc gia voi ma the nay.");
+        return;
+    }
+
+    TheDocGia* docGia = &(docGiaNode->data);
+    HienThiSachDocGiaDangMuon(docGia);
+
+    gotoxy(10, 10); // Adjust Y position based on previous display
+    cout << "Nhap ma sach can tra: ";
+    string inputMaSach = inputNumber(30, 10, 10);
+    if (inputMaSach == INPUT_CANCELLED || inputMaSach.empty()) {
+        ThongBao("Huy thao tac tra sach.");
+        return;
+    }
+    int maSachTra = stoi(inputMaSach);
+
+    // Tìm kiếm sách trong danh sách mượn trả của độc giả
+    PTRMT prevMT = nullptr;
+    PTRMT currentMT = docGia->dsMuonTra;
+    bool foundInBorrowedList = false;
+    while (currentMT != nullptr) {
+        if (currentMT->data.maSach == maSachTra && currentMT->data.trangThai == 0) { // Sách đang mượn
+            foundInBorrowedList = true;
+            break;
+        }
+        prevMT = currentMT;
+        currentMT = currentMT->next;
+    }
+
+    if (!foundInBorrowedList) {
+        ThongBao("Doc gia nay khong muon cuon sach nay hoac da tra.");
+        return;
+    }
+
+    // Tìm sách trong DS_DauSach để cập nhật trạng thái
+    DauSach* foundDauSach = nullptr;
+    NodeSach* foundSachCopy = nullptr;
+
+    for (int i = 0; i < dsDauSach.soluong; ++i) {
+        DauSach& ds = dsDauSach.nodes[i];
+        PTRDMS currentSach = ds.dms;
+        while (currentSach != nullptr) {
+            if (currentSach->data.maSach == maSachTra) {
+                foundSachCopy = currentSach;
+                foundDauSach = &ds;
+                break;
+            }
+            currentSach = currentSach->next;
+        }
+        if (foundSachCopy != nullptr) break;
+    }
+
+    if (foundSachCopy == nullptr) {
+        ThongBao("Loi he thong: Khong tim thay ban sao sach trong kho.");
+        return;
+    }
+
+    // Cập nhật trạng thái sách trong Danh mục sách
+    foundSachCopy->data.trangThai = 0; // Trả sách -> sách có thể cho mượn
+    foundDauSach->slmuon--; // Giảm số lượng sách đang được mượn của đầu sách
+
+    // Cập nhật thông tin trong danh sách mượn trả của độc giả
+    currentMT->data.ngayTra = getCurrentDate();
+    currentMT->data.trangThai = 1; // Đã trả
+
+    ThongBao("Tra sach thanh cong!");
+    write_DSDocGia(dsDocGia); // Ghi lại thông tin độc giả
+    ghiDanhSachDauSachRaFile(dsDauSach, "txt\\DanhSachDauSach.txt"); // Ghi lại thông tin đầu sách
+    _getch();
 }
