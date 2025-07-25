@@ -3,7 +3,6 @@
 #include "Sach.h"
 #include "DocGia.h"
 #include "UIConsole.h"
-#include "hamXuLy.h"
 
 using namespace std;
 
@@ -259,8 +258,6 @@ void menu(TREE_DOCGIA &root, DS_DauSach *dsDauSach){
         }
         else if (key == ENTER){
             clrscr();
-            docDanhSachDauSachTuFile("txt\\DanhSachDauSach.txt", *dsDauSach);
-            read_DSDocGia(root);
             if (chon == 0){
                 giaoDienQuanLyDocGia(root);
             }
@@ -268,29 +265,13 @@ void menu(TREE_DOCGIA &root, DS_DauSach *dsDauSach){
                 giaoDienQuanLyDauSach(dsDauSach);
             }
             else if (chon == 2){ // Muon sach
-                MuonSachFunc(root, *dsDauSach);
+                
             }
             else if (chon == 3){ // Tra sach
-                TraSachFunc(root, *dsDauSach);
+                
             }
-            else if (chon == 4){ // Cac sach doc gia dang muon
-                 clrscr();
-                SetColor(14);
-                CreateBoxDouble(40, 2, "   CAC SACH DANG MUON   ", 30);
-                SetColor(7);
-                gotoxy(10, 5); cout << "Nhap ma the doc gia: ";
-                string inputMaThe = inputNumber(30, 5, 10);
-                if (inputMaThe == INPUT_CANCELLED || inputMaThe.empty()) {
-                    ThongBao("Huy thao tac xem sach dang muon.");
-                } else {
-                    int maThe = stoi(inputMaThe);
-                    TREE_DOCGIA docGiaNode = Search(root, maThe);
-                    if (docGiaNode == nullptr) {
-                        ThongBao("Khong tim thay doc gia voi ma the nay.");
-                    } else {
-                        HienThiSachDocGiaDangMuon(&(docGiaNode->data));
-                    }
-                }
+            else if (chon == 4){
+                
             }
             else if (chon == soCN - 1){
                 write_DSDocGia(root);
