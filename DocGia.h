@@ -70,5 +70,4 @@ void XoaDocGia(TREE_DOCGIA &root);
 void SuaDocGia(TREE_DOCGIA &root);
 void HienThiFormSua(int x, int y, const string &ho, const string &ten, const string &gioitinh, int trangthai, int currentField);
 
-
 #endif

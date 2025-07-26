@@ -99,19 +99,15 @@ void giaoDienQuanLyDocGia(TREE_DOCGIA &root){
             key = _getch();
             if (key == UP) chon = (chon - 1 + soCN) % soCN;
             if (key == DOWN) chon = (chon + 1) % soCN;
-        }
-        else if (key == ENTER){
+        } else if (key == ENTER){
             clrscr();
             if (chon == 0){
                 ThemDocGia(root);
-            }
-            else if (chon == 1){ // Sua doc gia
+            } else if (chon == 1){ // Sua doc gia
                 SuaDocGia(root);
-            }
-            else if (chon == 2){ // xoa doc gia
+            } else if (chon == 2){ // xoa doc gia
                 XoaDocGia(root);
-            }
-            else if (chon == 3){
+            } else if (chon == 3){
                 giaoDienInDanhSachDocGia(root);
             }
             else if (chon == soCN - 1){
@@ -294,10 +290,6 @@ void menu(TREE_DOCGIA &root, DS_DauSach *dsDauSach){
 }
 
 int main(){
-    cout << "Da vao main()" << endl;
-    system("chcp 437");
-    getch();
-
     loadRandomCodes("txt\\random_codes.txt");
 
     resizeConsole(800, 600);
