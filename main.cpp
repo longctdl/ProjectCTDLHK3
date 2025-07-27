@@ -266,11 +266,15 @@ void menu(TREE_DOCGIA &root, DS_DauSach *dsDauSach){
             else if (chon == 3){ // Tra sach
                 
             }
-            else if (chon == 4){
-                
+            else if (chon == 4){ // in danh sach ma doc gia dang muon (thu)
+                ShowCur(true);
+                print_DsDangMuon(root);
+                getch();
+            }
+            else if(chon == 5){
+
             }
             else if (chon == soCN - 1){
-                write_DSDocGia(root);
                 freeBST(root);
                 return;
             }
@@ -297,6 +301,7 @@ int main(){
     DS_DauSach *ds = new DS_DauSach;
 
     TREE_DOCGIA root = nullptr;
-    read_DSDocGia(root);
+    read_File(root, "txt\\DanhSachDocGia.txt");
     menu(root, ds);
+    freeBST(root);
 }
