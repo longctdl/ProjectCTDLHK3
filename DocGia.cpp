@@ -8,7 +8,7 @@
 #include <queue>
 
 using namespace std;
-const int MAX_MATHE = 10000;
+// const int MAX_MATHE = 10000;
 
 TREE_DOCGIA createNode(TheDocGia docgia){
     TREE_DOCGIA newNode = new NodeTheDocGia;
@@ -142,6 +142,7 @@ void ThemDocGia(TREE_DOCGIA &root){
     docgia.maThe = maThe;
 
     InsertNode(root, docgia);
+    save_File(root, "txt\\DanhSachDocGia.txt");
     
     SetColor(10);
     ThongBao("THEM DOC GIA THANH CONG!");
@@ -232,7 +233,7 @@ Date parseDate(const string &str){
         d = {-1, -1, -1};
         return d;
     }
-    sscanf(str.c_str(), "%D/%d/%d", &d.ngay, &d.thang, &d.nam);
+    sscanf(str.c_str(), "%d/%d/%d", &d.ngay, &d.thang, &d.nam);
     return d;
 }
 

@@ -1,21 +1,105 @@
-7500
-Nguyen Ngoc
-Diep
-Nu
+5000
+Dam Huy
+Son
+Nam
 1
-1234 0/0/0 0/0/0 1
-5678 0/0/0 -1/-1/-1 0
-2578 -1/-1/-1 -1/-1/-1 2
 
 2500
+Nguyen Ngoc
+Long
+Nam
+1
+
+7500
 Van Minh
 Tan
 Nam
 1
 
+1250
+Truong Van
+Dat
+Nam
+1
+
 3750
+Nguyen Thi
+Dung
+Nu
+1
+1234 10/06/2025 10/07/2025 1
+5678 10/07/2025 -1/-1/-1 0
+2578 30/06/2025 -1/-1/-1 2
+
+6250
+Nguyen Ngoc
+Diep
+Nu
+1
+
+8750
+Nguyen Thi
+Huyen
+Nu
+1
+
+625
+Le Thi Hong
+Gam
+Nu
+1
+
+1875
 Tran Thai
 Son
+Nam
+1
+
+3125
+Huynh Phat
+Tai
+Nam
+1
+
+4375
+Dao Van
+Lam
+Nam
+1
+
+5625
+Tran Van
+Que
+Nam
+1
+
+6875
+Ngo Van
+Hoa
+Nam
+1
+
+8125
+Dinh Tien
+Hoang
+Nam
+1
+
+9375
+Nguyen Ho Quang
+Minh
+Nam
+1
+
+312
+Lu Tu
+Hao
+Nam
+1
+
+937
+Pham Ngoc
+Sinh
 Nam
 1
 
