@@ -32,7 +32,10 @@ string inputName(int x, int y, int maxLen, bool allowSpace = false) {
     
     while (true) {
         c = _getch();
-
+        if(c == 0 || c == -32){
+            char next = _getch();
+            continue;
+        }
         if(c==27){ //ESC
             return INPUT_CANCELLED;
         }
@@ -66,6 +69,11 @@ string inputNumber(int x, int y, int maxLen) {
     
     while (true) {
         c = _getch();
+
+        if(c == 0 || c== -32){
+            char next = _getch();
+            continue;
+        }
 
         if (c == 27) { // ESC key
             return INPUT_CANCELLED;
