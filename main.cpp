@@ -10,11 +10,13 @@ using namespace std;
 #define DOWN 80
 #define ENTER 13
 
-void giaoDienInDanhSachDocGia(TREE_DOCGIA &root){
+void giaoDienInDanhSachDocGia(TREE_DOCGIA &root)
+{
     clrscr();
     ShowCur(false);
     SetColor(14);
-    gotoxy(35, 2); cout << "=== IN DANH SACH DOC GIA ===";
+    gotoxy(35, 2);
+    cout << "=== IN DANH SACH DOC GIA ===";
     SetColor(7);
 
     const char *menu[] = {
@@ -24,33 +26,47 @@ void giaoDienInDanhSachDocGia(TREE_DOCGIA &root){
     int soCN = sizeof(menu) / sizeof(char *);
     int chon = 0;
 
-    while (true){
+    while (true)
+    {
         ShowCur(false);
-        for (int i = 0; i < soCN; ++i){
-            if (i == chon){
-                SetColor(0); SetBGColor(11);
+        for (int i = 0; i < soCN; ++i)
+        {
+            if (i == chon)
+            {
+                SetColor(0);
+                SetBGColor(11);
             }
-            else{
-                SetColor(15); SetBGColor(0);
+            else
+            {
+                SetColor(15);
+                SetBGColor(0);
             }
             CreateBoxDouble(35, 5 + i * 3, menu[i], 30);
-            SetColor(15); SetBGColor(0);
+            SetColor(15);
+            SetBGColor(0);
         }
         int key = _getch();
-        if (key == 224){
+        if (key == 224)
+        {
             key = _getch();
-            if (key == UP) chon = (chon - 1 + soCN) % soCN;
-            if (key == DOWN) chon = (chon + 1) % soCN;
+            if (key == UP)
+                chon = (chon - 1 + soCN) % soCN;
+            if (key == DOWN)
+                chon = (chon + 1) % soCN;
         }
-        else if (key == ENTER){
+        else if (key == ENTER)
+        {
             clrscr();
-            if (chon == 0){ // Sap xep theo ten + ho
+            if (chon == 0)
+            { // Sap xep theo ten + ho
                 XuLyInDanhSachDocGia(root, true);
             }
-            else if (chon == 1){ // Sap xep theo ma the
+            else if (chon == 1)
+            { // Sap xep theo ma the
                 XuLyInDanhSachDocGia(root, false);
             }
-            else if (chon == soCN - 1){
+            else if (chon == soCN - 1)
+            {
                 break;
             }
             clrscr();
@@ -64,7 +80,8 @@ void giaoDienInDanhSachDocGia(TREE_DOCGIA &root){
     ShowCur(true);
 }
 
-void giaoDienQuanLyDocGia(TREE_DOCGIA &root){
+void giaoDienQuanLyDocGia(TREE_DOCGIA &root)
+{
     clrscr();
     ShowCur(false);
     SetColor(14);
@@ -77,40 +94,59 @@ void giaoDienQuanLyDocGia(TREE_DOCGIA &root){
         "2. Sua thong tin doc gia",
         "3. Xoa the doc gia",
         "4. In danh sach doc gia",
-        "5. Quay lai"
-    };
+        "5. Quay lai"};
     int soCN = sizeof(menu) / sizeof(char *);
     int chon = 0;
 
-    while (true){
+    while (true)
+    {
         ShowCur(false);
-        for (int i = 0; i < soCN; ++i){
-            if (i == chon){
-                SetColor(0); SetBGColor(11);
+        for (int i = 0; i < soCN; ++i)
+        {
+            if (i == chon)
+            {
+                SetColor(0);
+                SetBGColor(11);
             }
-            else{
-                SetColor(15); SetBGColor(0);
+            else
+            {
+                SetColor(15);
+                SetBGColor(0);
             }
             CreateBoxDouble(35, 5 + i * 3, menu[i], 30);
-            SetColor(15); SetBGColor(0);
+            SetColor(15);
+            SetBGColor(0);
         }
         int key = _getch();
-        if (key == 224){
+        if (key == 224)
+        {
             key = _getch();
-            if (key == UP) chon = (chon - 1 + soCN) % soCN;
-            if (key == DOWN) chon = (chon + 1) % soCN;
-        } else if (key == ENTER){
+            if (key == UP)
+                chon = (chon - 1 + soCN) % soCN;
+            if (key == DOWN)
+                chon = (chon + 1) % soCN;
+        }
+        else if (key == ENTER)
+        {
             clrscr();
-            if (chon == 0){
+            if (chon == 0)
+            {
                 ThemDocGia(root);
-            } else if (chon == 1){ // Sua doc gia
+            }
+            else if (chon == 1)
+            { // Sua doc gia
                 SuaDocGia(root);
-            } else if (chon == 2){ // xoa doc gia
+            }
+            else if (chon == 2)
+            { // xoa doc gia
                 XoaDocGia(root);
-            } else if (chon == 3){
+            }
+            else if (chon == 3)
+            {
                 giaoDienInDanhSachDocGia(root);
             }
-            else if (chon == soCN - 1){
+            else if (chon == soCN - 1)
+            {
                 break;
             }
             clrscr();
@@ -124,7 +160,7 @@ void giaoDienQuanLyDocGia(TREE_DOCGIA &root){
     ShowCur(true);
 }
 
-void giaoDienQuanLyDauSach(DS_DauSach *dsDauSach)
+void giaoDienQuanLyDauSach(DS_DauSach &dsDauSach)
 {
     clrscr();
     ShowCur(false);
@@ -175,25 +211,25 @@ void giaoDienQuanLyDauSach(DS_DauSach *dsDauSach)
             clrscr();
             if (chon == 0)
             {
-
-                ThemDauSach(*dsDauSach);
-                ghiDanhSachDauSachRaFile(*dsDauSach, "txt\\DanhSachDauSach.txt");
+                docDanhSachDauSachTuFile("txt\\DanhSachDauSach.txt", dsDauSach);
+                ThemDauSach(dsDauSach);
+                ghiDanhSachDauSachRaFile(dsDauSach, "txt\\DanhSachDauSach.txt");
                 gotoxy(35, 10);
                 getch();
             }
             else if (chon == 1)
             {
                 // Gọi hàm in danh sách đầu sách
-                docDanhSachDauSachTuFile("txt\\DanhSachDauSach.txt", *dsDauSach);
-                InDanhSachDauSachTheoTheLoai(*dsDauSach);
+                docDanhSachDauSachTuFile("txt\\DanhSachDauSach.txt", dsDauSach);
+                InDanhSachDauSachTheoTheLoai(dsDauSach);
                 gotoxy(35, 10);
                 getch();
             }
             else if (chon == 2)
             {
                 // Gọi hàm tìm kiếm sách theo TenTen
-                docDanhSachDauSachTuFile("txt\\DanhSachDauSach.txt", *dsDauSach);
-                TimSachTheoTen(*dsDauSach);
+                docDanhSachDauSachTuFile("txt\\DanhSachDauSach.txt", dsDauSach);
+                TimSachTheoTen(dsDauSach);
                 gotoxy(35, 10);
                 getch();
             }
@@ -213,10 +249,12 @@ void giaoDienQuanLyDauSach(DS_DauSach *dsDauSach)
     ShowCur(true);
 }
 
-void menu(TREE_DOCGIA &root, DS_DauSach *dsDauSach){
+void menu(TREE_DOCGIA &root, DS_DauSach &dsDauSach)
+{
     clrscr();
     ShowCur(false);
-    gotoxy(30, 2); SetColor(14);
+    gotoxy(30, 2);
+    SetColor(14);
     cout << "=== CHUONG TRINH QUAN LY THU VIEN ===";
     SetColor(7);
     const char *chucNang[] = {
@@ -226,55 +264,67 @@ void menu(TREE_DOCGIA &root, DS_DauSach *dsDauSach){
         "Tra sach",
         "Cac sach doc gia dang muon",
         "Thong ke top 10 sach",
-        "Thoat"
-    };
+        "Thoat"};
     int chon = 0;
     int soCN = sizeof(chucNang) / sizeof(char *);
 
-    while (true){
+    while (true)
+    {
         ShowCur(false);
-        for (int i = 0; i < soCN; ++i){
-            if (i == chon){
+        for (int i = 0; i < soCN; ++i)
+        {
+            if (i == chon)
+            {
                 SetColor(0);
                 SetBGColor(11);
             }
-            else{
+            else
+            {
                 SetColor(15);
                 SetBGColor(0);
             }
             CreateBoxDouble(35, 5 + i * 3, chucNang[i], 30);
-            SetColor(15); SetBGColor(0);
+            SetColor(15);
+            SetBGColor(0);
         }
 
         int key = _getch();
-        if (key == 224){
+        if (key == 224)
+        {
             key = _getch();
-            if (key == UP) chon = (chon - 1 + soCN) % soCN;
-            if (key == DOWN) chon = (chon + 1) % soCN;
+            if (key == UP)
+                chon = (chon - 1 + soCN) % soCN;
+            if (key == DOWN)
+                chon = (chon + 1) % soCN;
         }
-        else if (key == ENTER){
+        else if (key == ENTER)
+        {
             clrscr();
-            if (chon == 0){
+            if (chon == 0)
+            {
                 giaoDienQuanLyDocGia(root);
             }
-            else if (chon == 1){
+            else if (chon == 1)
+            {
                 giaoDienQuanLyDauSach(dsDauSach);
             }
-            else if (chon == 2){ // Muon sach
-                
+            else if (chon == 2)
+            { // Muon sach
             }
-            else if (chon == 3){ // Tra sach
-                
+            else if (chon == 3)
+            { // Tra sach
             }
-            else if (chon == 4){ // in danh sach ma doc gia dang muon (thu)
+            else if (chon == 4)
+            { // in danh sach ma doc gia dang muon (thu)
                 ShowCur(true);
                 print_DsDangMuon(root);
                 getch();
             }
-            else if(chon == 5){
-
+            else if (chon == 5)
+            {
             }
-            else if (chon == soCN - 1){
+            else if (chon == soCN - 1)
+            {
                 freeBST(root);
                 return;
             }
@@ -293,12 +343,14 @@ void menu(TREE_DOCGIA &root, DS_DauSach *dsDauSach){
     }
 }
 
-int main(){
-    loadRandomCodes("txt\\random_codes.txt");
+int main()
+{
+    system("chcp 437");
+    getch();
 
     resizeConsole(800, 600);
     fixConsoleWindowSize(100, 30);
-    DS_DauSach *ds = new DS_DauSach;
+    DS_DauSach ds;
 
     TREE_DOCGIA root = nullptr;
     read_File(root, "txt\\DanhSachDocGia.txt");
