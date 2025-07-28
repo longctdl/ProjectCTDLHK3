@@ -1,63 +1,72 @@
-12333
-Conan
-ko ro
-45
-1999
-Truyen Tranh
-0
-312823
-
 12323
-Dragon Ball
-ko ro
-34
-1995
-Truyen Tranh
-0
-159329,448700,324470
-
-10234
-Khoa hoc vien tuong
-ko ro
-500
-2023
-Khoa Hoc
-0
-233669,558051,424333
-
-12345
-Lap Trinh C
+CTDL
 PTIT
 250
-2020
-Ky Thuat
+2022
+Cong Nghe
 0
-380814,281900
-
-12344
-Lap Trinh Python
-PTIT
+8|Ke 2|0
+7|Ke 1|0
+#
+1233
+Dragon ball
+Not
 300
-2024
-Ky Thuat
+2002
+Truyen Tranh
 0
-380814
-
-12341
-Lap Trinh Web
+3|Ke 3|0
+2|Ke 2|0
+1|Ke 1|0
+#
+12333
+Lap Trinh C
+Ptit
+250
+2020
+Cong Nghe
+0
+4|Ke 4|0
+#
+12223
+Lap Trinh web
 PTIT
-280
+200
 2025
-Ky Thuat
+Cong nghe
 0
-570364,290583,404578,931212
-
-12343
+6|Ke 6|0
+5|Ke 5|0
+#
+11221
 Naruto
 Kishimoto
-50
+100
 1999
 Truyen Tranh
 0
-941468,976074
-
+13|Ke 13|0
+12|Ke 12|0
+#
+12335
+OOP
+Ptit
+230
+2022
+Cong Nghe
+0
+9|Ke 9|0
+10|Ke 10|0
+11|Ke 11|0
+#
+12233
+Toan
+ptit
+120
+2025
+Sach Giao Khoa
+0
+16|Ke C|0
+15|Ke C|0
+14|Ke C|0
+#

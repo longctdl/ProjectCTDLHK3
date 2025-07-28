@@ -171,7 +171,7 @@ void giaoDienQuanLyDocGia(TREE_DOCGIA &root)
     ShowCur(true);
 }
 
-void giaoDienQuanLyDauSach(DS_DauSach *dsDauSach)
+void giaoDienQuanLyDauSach(DS_DauSach &dsDauSach)
 {
     clrscr();
     ShowCur(false);
@@ -222,25 +222,25 @@ void giaoDienQuanLyDauSach(DS_DauSach *dsDauSach)
             clrscr();
             if (chon == 0)
             {
-
-                ThemDauSach(*dsDauSach);
-                ghiDanhSachDauSachRaFile(*dsDauSach, "txt\\DanhSachDauSach.txt");
+                docDanhSachDauSachTuFile("txt\\DanhSachDauSach.txt", dsDauSach);
+                ThemDauSach(dsDauSach);
+                ghiDanhSachDauSachRaFile(dsDauSach, "txt\\DanhSachDauSach.txt");
                 gotoxy(35, 10);
                 getch();
             }
             else if (chon == 1)
             {
                 // Gọi hàm in danh sách đầu sách
-                docDanhSachDauSachTuFile("txt\\DanhSachDauSach.txt", *dsDauSach);
-                InDanhSachDauSachTheoTheLoai(*dsDauSach);
+                docDanhSachDauSachTuFile("txt\\DanhSachDauSach.txt", dsDauSach);
+                InDanhSachDauSachTheoTheLoai(dsDauSach);
                 gotoxy(35, 10);
                 getch();
             }
             else if (chon == 2)
             {
                 // Gọi hàm tìm kiếm sách theo TenTen
-                docDanhSachDauSachTuFile("txt\\DanhSachDauSach.txt", *dsDauSach);
-                TimSachTheoTen(*dsDauSach);
+                docDanhSachDauSachTuFile("txt\\DanhSachDauSach.txt", dsDauSach);
+                TimSachTheoTen(dsDauSach);
                 gotoxy(35, 10);
                 getch();
             }
@@ -260,7 +260,7 @@ void giaoDienQuanLyDauSach(DS_DauSach *dsDauSach)
     ShowCur(true);
 }
 
-void menu(TREE_DOCGIA &root, DS_DauSach *dsDauSach)
+void menu(TREE_DOCGIA &root, DS_DauSach &dsDauSach)
 {
     clrscr();
     ShowCur(false);
@@ -342,16 +342,12 @@ void menu(TREE_DOCGIA &root, DS_DauSach *dsDauSach)
 
 int main()
 {
-
-    cout << "Da vao main()" << endl;
     system("chcp 437");
     getch();
 
-    loadRandomCodes("txt\\random_codes.txt");
-
     resizeConsole(800, 600);
     fixConsoleWindowSize(100, 30);
-    DS_DauSach *ds = new DS_DauSach;
+    DS_DauSach ds;
 
     TREE_DOCGIA root = nullptr;
     read_DSDocGia(root);
