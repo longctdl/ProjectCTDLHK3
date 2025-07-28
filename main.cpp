@@ -345,9 +345,6 @@ void menu(TREE_DOCGIA &root, DS_DauSach &dsDauSach)
 
 int main()
 {
-    system("chcp 437");
-    getch();
-
     resizeConsole(800, 600);
     fixConsoleWindowSize(100, 30);
     DS_DauSach ds;

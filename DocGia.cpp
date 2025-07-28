@@ -64,53 +64,52 @@ bool Enter_DocGia(TheDocGia &docgia) {
     clrscr();
 
     SetColor(14);
-    CreateBoxDouble(40, 2, "   THEM DOC GIA MOI   ", 25);
+    CreateBoxDouble(99, 2, "   THEM DOC GIA MOI   ", 23);
     SetColor(7);
 
-    gotoxy(15, 5); cout << char(218) << string(70, char(196)) << char(191);
+    gotoxy(87, 5); cout << char(218) << string(130 - 87 - 1, char(196)) << char(191);
     for (int i = 6; i < 14; ++i) { 
-        gotoxy(15, i); cout << char(179);
-        gotoxy(86, i); cout << char(179);
+        gotoxy(87, i); cout << char(179);
+        gotoxy(130, i); cout << char(179);
     }
-    gotoxy(15, 14); cout << char(192) << string(70, char(196)) << char(217);
+    gotoxy(87, 14); cout << char(192) << string(130 - 87 - 1, char(196)) << char(217);
 
     SetColor(8);
-    gotoxy(20, 15); cout << "Meo: Nhan phim [ESC] de huy bo va thoat.";
+    gotoxy(89, 15); cout << "Meo: Nhan phim [ESC] de huy bo va thoat.";
     SetColor(7);
 
-    gotoxy(20, 7);  cout << "Ho         : ";
-    gotoxy(20, 9);  cout << "Ten        : ";
-    gotoxy(20, 11); cout << "Gioi tinh  : ";
-    gotoxy(55, 11); cout<<"(Nam/Nu)";
+    gotoxy(90, 7);  cout << "Ho         : ";
+    gotoxy(90, 9);  cout << "Ten        : ";
+    gotoxy(90, 11); cout << "Gioi tinh  : ";
+    gotoxy(115, 11); cout << "(Nam/Nu)";
 
-    const int INPUT_X= 33;
+    const int INPUT_X = 103;
 
     string ho, ten, gioitinh;
 
     while (true) {
-        ho = inputName(INPUT_X, 7, 30, true);
-        if(ho == INPUT_CANCELLED) return false;
+        ho = inputName(INPUT_X, 7, 25, true);
+        if (ho == INPUT_CANCELLED) return false;
         if (!ho.empty()) break;
         ThongBao("Ho khong duoc de trong. Vui long nhap lai!");
     }
 
     while (true) {
         ten = inputName(INPUT_X, 9, 10, false);
-        if(ten == INPUT_CANCELLED) return false;
+        if (ten == INPUT_CANCELLED) return false;
         if (!ten.empty()) break;
         ThongBao("Ten khong duoc de trong. Vui long nhap lai!");
     }
 
     while (true) {
         gioitinh = inputName(INPUT_X, 11, 3, false);
-        if(gioitinh == INPUT_CANCELLED) return false;
+        if (gioitinh == INPUT_CANCELLED) return false;
         if (isValidGender(gioitinh)) {
-            gotoxy(55, 11); cout << "          ";
-            break; 
+            gotoxy(115, 11); cout << "          ";
+            break;
         } else {
             ThongBao("Gioi tinh khong hop le. Chi duoc nhap 'Nam' hoac 'Nu'.");
-            gotoxy(INPUT_X, 11);
-            cout << "       ";
+            gotoxy(INPUT_X, 11); cout << "     ";
         }
     }
 
@@ -125,28 +124,30 @@ bool Enter_DocGia(TheDocGia &docgia) {
 }
 
 void ThemDocGia(TREE_DOCGIA &root){
-    TheDocGia docgia;
-    if(!Enter_DocGia(docgia)){
-        ThongBao("DA HUY THAO TAC THEM DOC GIA");
-        ShowCur(false);
-        return;
-    }
-
-    int maThe = getMaTheTuFile("txt\\MaTheDocGia.txt");
-
-    if(maThe == -1){
-        ThongBao("DA HET MA THE, KHONG THE THEM DOC GIA MOI");
-        return;
-    }
-
-    docgia.maThe = maThe;
-
-    InsertNode(root, docgia);
-    save_File(root, "txt\\DanhSachDocGia.txt");
+    while(true){
+        TheDocGia docgia;
+        if(!Enter_DocGia(docgia)){
+            ThongBao("DA HUY THAO TAC THEM DOC GIA");
+            ShowCur(false);
+            break;
+        }
     
-    SetColor(10);
-    ThongBao("THEM DOC GIA THANH CONG!");
-    SetColor(7);
+        int maThe = getMaTheTuFile("txt\\MaTheDocGia.txt");
+    
+        if(maThe == -1){
+            ThongBao("DA HET MA THE, KHONG THE THEM DOC GIA MOI");
+            return;
+        }
+    
+        docgia.maThe = maThe;
+    
+        InsertNode(root, docgia);
+        save_File(root, "txt\\DanhSachDocGia.txt");
+        
+        SetColor(10);
+        ThongBao("THEM DOC GIA THANH CONG!");
+        SetColor(7);
+    }
 }
 
 void freeBST(TREE_DOCGIA &root){
