@@ -32,7 +32,10 @@ string inputName(int x, int y, int maxLen, bool allowSpace = false) {
     
     while (true) {
         c = _getch();
-
+        if(c == 0 || c == -32){
+            char next = _getch();
+            continue;
+        }
         if(c==27){ //ESC
             return INPUT_CANCELLED;
         }
@@ -67,6 +70,11 @@ string inputNumber(int x, int y, int maxLen) {
     while (true) {
         c = _getch();
 
+        if(c == 0 || c== -32){
+            char next = _getch();
+            continue;
+        }
+
         if (c == 27) { // ESC key
             return INPUT_CANCELLED;
         }
@@ -85,6 +93,34 @@ string inputNumber(int x, int y, int maxLen) {
     }
     
     return s;
+}
+
+char GetYesNoInput(int x, int y){
+    char inputChar;
+    char lowerChar;
+    int errorMsgX = x;
+    int errorMsgY = y + 1;
+
+    while(true){
+        gotoxy(x,y);
+        clreol();
+
+        inputChar = _getch();
+        lowerChar = tolower(inputChar);
+
+        if(lowerChar == 'y' || lowerChar == 'n'){
+            gotoxy(errorMsgX, errorMsgY);
+            clreol();
+            gotoxy(x, y);
+            cout<<inputChar;
+            return lowerChar;
+        } else{
+            SetColor(12); //mau do
+            ThongBao("Vui long nhap y/n");
+            SetColor(7);
+        }
+
+    }
 }
 
 

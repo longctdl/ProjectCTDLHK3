@@ -69,12 +69,6 @@ void giaoDienInDanhSachDocGia(TREE_DOCGIA &root)
             {
                 break;
             }
-            else
-            {
-                gotoxy(35, 8);
-                cout << "Chuc nang nay chua lam!";
-                getch();
-            }
             clrscr();
             SetColor(14);
             gotoxy(35, 2);
@@ -141,6 +135,7 @@ void giaoDienQuanLyDocGia(TREE_DOCGIA &root)
             }
             else if (chon == 1)
             { // Sua doc gia
+                SuaDocGia(root);
             }
             else if (chon == 2)
             { // xoa doc gia
@@ -153,12 +148,6 @@ void giaoDienQuanLyDocGia(TREE_DOCGIA &root)
             else if (chon == soCN - 1)
             {
                 break;
-            }
-            else
-            {
-                gotoxy(35, 8);
-                cout << "Chuc nang nay chua lam!";
-                getch();
             }
             clrscr();
             SetColor(14);
@@ -273,14 +262,14 @@ void menu(TREE_DOCGIA &root, DS_DauSach &dsDauSach)
         "Quan ly dau sach",
         "Muon sach",
         "Tra sach",
-        "Thong ke",
+        "Cac sach doc gia dang muon",
+        "Thong ke top 10 sach",
         "Thoat"};
     int chon = 0;
     int soCN = sizeof(chucNang) / sizeof(char *);
 
     while (true)
     {
-        // clrscr();
         ShowCur(false);
         for (int i = 0; i < soCN; ++i)
         {
@@ -319,9 +308,23 @@ void menu(TREE_DOCGIA &root, DS_DauSach &dsDauSach)
             {
                 giaoDienQuanLyDauSach(dsDauSach);
             }
+            else if (chon == 2)
+            { // Muon sach
+            }
+            else if (chon == 3)
+            { // Tra sach
+            }
+            else if (chon == 4)
+            { // in danh sach ma doc gia dang muon (thu)
+                ShowCur(true);
+                print_DsDangMuon(root);
+                getch();
+            }
+            else if (chon == 5)
+            {
+            }
             else if (chon == soCN - 1)
             {
-                write_DSDocGia(root);
                 freeBST(root);
                 return;
             }
@@ -350,6 +353,7 @@ int main()
     DS_DauSach ds;
 
     TREE_DOCGIA root = nullptr;
-    read_DSDocGia(root);
+    read_File(root, "txt\\DanhSachDocGia.txt");
     menu(root, ds);
+    freeBST(root);
 }

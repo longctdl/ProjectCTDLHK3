@@ -6,8 +6,7 @@
 #include <iomanip>
 using namespace std;
 
-void SetColor(WORD color)
-{
+void SetColor(WORD color){
     HANDLE hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO info;
     GetConsoleScreenBufferInfo(hConsoleOutput, &info);
@@ -17,35 +16,30 @@ void SetColor(WORD color)
     SetConsoleTextAttribute(hConsoleOutput, attr);
 }
 
-void gotoxy(short x, short y)
-{
+void gotoxy(short x, short y){
     HANDLE hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD pos = {x, y};
     SetConsoleCursorPosition(hConsoleOutput, pos);
 }
 
-void ShowCur(bool CursorVisibility)
-{
+void ShowCur(bool CursorVisibility){
     HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_CURSOR_INFO cursor = {1, CursorVisibility};
     SetConsoleCursorInfo(handle, &cursor);
 }
 
-void clrscr()
-{
+void clrscr(){
     system("cls");
 }
 
-void resizeConsole(int width, int height)
-{
+void resizeConsole(int width, int height){
     HWND console = GetConsoleWindow();
     RECT r;
     GetWindowRect(console, &r);
     MoveWindow(console, r.left, r.top, width, height, TRUE);
 }
 
-void fixConsoleWindowSize(int width, int height)
-{
+void fixConsoleWindowSize(int width, int height){
     HWND console = GetConsoleWindow();
     LONG style = GetWindowLong(console, GWL_STYLE);
     style &= ~(WS_MAXIMIZEBOX | WS_SIZEBOX);
@@ -59,8 +53,7 @@ void fixConsoleWindowSize(int width, int height)
     SetConsoleWindowInfo(hConsole, TRUE, &windowSize);
 }
 
-void SetBGColor(WORD color)
-{
+void SetBGColor(WORD color){
     HANDLE hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO info;
     GetConsoleScreenBufferInfo(hConsoleOutput, &info);
@@ -71,8 +64,7 @@ void SetBGColor(WORD color)
     SetConsoleTextAttribute(hConsoleOutput, attr);
 }
 
-void CreateBoxSingle(int x, int y, string text, int length)
-{
+void CreateBoxSingle(int x, int y, string text, int length){
     gotoxy(x - 2, y - 1);
     cout << char(218) << setw(length) << setfill(char(196)) << char(196) << char(191); // ┌───┐
 
@@ -83,8 +75,7 @@ void CreateBoxSingle(int x, int y, string text, int length)
     cout << char(192) << setw(length) << setfill(char(196)) << char(196) << char(217); // └───┘
 }
 // Vẽ hộp với khung **kép**
-void CreateBoxDouble(int x, int y, string text, int length)
-{
+void CreateBoxDouble(int x, int y, string text, int length){
     gotoxy(x - 2, y - 1);
     cout << char(201) << setw(length) << setfill(char(205)) << char(205) << char(187); // ╔═══╗
 
@@ -95,8 +86,7 @@ void CreateBoxDouble(int x, int y, string text, int length)
     cout << char(200) << setw(length) << setfill(char(205)) << char(205) << char(188); // ╚═══╝
 }
 
-int wherex(void)
-{
+int wherex(void){
     HANDLE hConsoleOutput;
 
     hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -105,8 +95,7 @@ int wherex(void)
     return screen_buffer_info.dwCursorPosition.X;
 }
 
-int wherey(void)
-{
+int wherey(void){
     HANDLE hConsoleOutput;
     hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO screen_buffer_info;
@@ -114,8 +103,7 @@ int wherey(void)
     return screen_buffer_info.dwCursorPosition.Y;
 }
 
-void clreol()
-{
+void clreol(){
     COORD coord;
     DWORD written;
     CONSOLE_SCREEN_BUFFER_INFO info;
@@ -137,8 +125,7 @@ void clreol()
     gotoxy(info.dwCursorPosition.X, info.dwCursorPosition.Y);
 }
 
-void ThongBao(const char *s)
-{
+void ThongBao(const char *s){
     int x = wherex(), y = wherey();
     gotoxy(10, 24);
     cout << s;
