@@ -59,12 +59,31 @@ int getMaTheTuFile(const char* filename) {
     return stoi(maTheStr);
 }
 
-bool Enter_DocGia(TheDocGia &docgia) {
-    ShowCur(true);
-    clrscr();
+void VeKhungDanhSach() {
+    SetColor(14); // Màu vàng
+    CreateBoxDouble(40, 1, "   THEM DOC GIA   ", 25);
+    cout << setfill(' ');
+    SetColor(7); // Màu trắng
+    
+    gotoxy(4, 3);
+    cout << char(218) << string(6, char(196)) << char(194) << string(10, char(196)) << char(194)
+         << string(30, char(196)) << char(194) << string(12, char(196)) << char(194)
+         << string(15, char(196)) << char(191);
+    
+    gotoxy(4, 4);
+    cout << char(179) << " " << left << setw(5) << "STT" << char(179) << " " << left << setw(9) << "Ma The"
+         << char(179) << " " << left << setw(29) << "Ho va Ten" << char(179) << " " << left << setw(11) << "Gioi Tinh"
+         << char(179) << " " << left << setw(14) << "Trang Thai" << char(179);
+    
+    gotoxy(4, 5);
+    cout << char(195) << string(6, char(196)) << char(197) << string(10, char(196)) << char(197)
+         << string(30, char(196)) << char(197) << string(12, char(196)) << char(197)
+         << string(15, char(196)) << char(180);
+}
 
+void VeKhungNhapLieu() {
     SetColor(14);
-    CreateBoxDouble(99, 2, "   THEM DOC GIA MOI   ", 23);
+    CreateBoxDouble(97, 2, "   NHAP THONG TIN   ", 20);
     SetColor(7);
 
     gotoxy(87, 5); cout << char(218) << string(130 - 87 - 1, char(196)) << char(191);
@@ -74,42 +93,52 @@ bool Enter_DocGia(TheDocGia &docgia) {
     }
     gotoxy(87, 14); cout << char(192) << string(130 - 87 - 1, char(196)) << char(217);
 
+    gotoxy(92, 7);  cout << "Ho         : ";
+    gotoxy(92, 9);  cout << "Ten        : ";
+    gotoxy(92, 11); cout << "Gioi tinh  : ";
+    gotoxy(117, 11); cout << "(Nam/Nu)";
+
     SetColor(8);
-    gotoxy(89, 15); cout << "Meo: Nhan phim [ESC] de huy bo va thoat.";
+    gotoxy(94, 15); cout << "Meo: Nhan [ESC] de huy bo.";
     SetColor(7);
+}
 
-    gotoxy(90, 7);  cout << "Ho         : ";
-    gotoxy(90, 9);  cout << "Ten        : ";
-    gotoxy(90, 11); cout << "Gioi tinh  : ";
-    gotoxy(115, 11); cout << "(Nam/Nu)";
+void XoaKhungNhapLieu() {
+    for (int i = 0; i <= 17; ++i) {
+        gotoxy(87, i);
+        cout << string(45, ' ');
+    }
+}
 
-    const int INPUT_X = 103;
+bool Enter_DocGia(TheDocGia &docgia) {
+    ShowCur(true);
+    VeKhungNhapLieu();
 
+    const int INPUT_X = 105;
     string ho, ten, gioitinh;
 
     while (true) {
         ho = inputName(INPUT_X, 7, 25, true);
-        if (ho == INPUT_CANCELLED) return false;
+        if (ho == INPUT_CANCELLED) { ShowCur(false); return false; }
         if (!ho.empty()) break;
         ThongBao("Ho khong duoc de trong. Vui long nhap lai!");
     }
-
     while (true) {
         ten = inputName(INPUT_X, 9, 10, false);
-        if (ten == INPUT_CANCELLED) return false;
+        if (ten == INPUT_CANCELLED) { ShowCur(false); return false; }
         if (!ten.empty()) break;
         ThongBao("Ten khong duoc de trong. Vui long nhap lai!");
     }
-
     while (true) {
         gioitinh = inputName(INPUT_X, 11, 3, false);
-        if (gioitinh == INPUT_CANCELLED) return false;
+        if (gioitinh == INPUT_CANCELLED) { ShowCur(false); return false; }
         if (isValidGender(gioitinh)) {
-            gotoxy(115, 11); cout << "          ";
+            gotoxy(117, 11); cout << "         ";
             break;
         } else {
             ThongBao("Gioi tinh khong hop le. Chi duoc nhap 'Nam' hoac 'Nu'.");
-            gotoxy(INPUT_X, 11); cout << "     ";
+            gotoxy(INPUT_X, 11); cout << "      ";
+            gotoxy(INPUT_X, 11);
         }
     }
 
@@ -118,36 +147,129 @@ bool Enter_DocGia(TheDocGia &docgia) {
     docgia.gioitinh = chuanHoaTen(gioitinh);
     docgia.trangThai = 1;
     docgia.dsMuonTra = nullptr;
-
     ShowCur(false);
     return true;
 }
 
-void ThemDocGia(TREE_DOCGIA &root){
-    while(true){
-        TheDocGia docgia;
-        if(!Enter_DocGia(docgia)){
-            ThongBao("DA HUY THAO TAC THEM DOC GIA");
-            ShowCur(false);
+void HienThiTrangDocGia(TheDocGia** Array, int page, int totalPages, int totalNode) {
+    const int ITEMS_PER_PAGE = 15;
+    const int START_Y = 6;
+    
+    for (int i = 0; i < ITEMS_PER_PAGE + 1; ++i) {
+        gotoxy(4, START_Y + i);
+        cout << string(80, ' ');
+    }
+
+    int startIndex = page * ITEMS_PER_PAGE;
+    int endIndex = min(startIndex + ITEMS_PER_PAGE, totalNode);
+    
+    for (int i = startIndex; i < endIndex; ++i) {
+        int row = START_Y + (i - startIndex);
+        gotoxy(4, row); cout << char(179);
+        cout << " " << left << setw(5) << i + 1 << char(179);
+        cout << " " << left << setw(9) << Array[i]->maThe << char(179);
+        string hoTen = Array[i]->ho + " " + Array[i]->ten;
+        cout << " " << left << setw(29) << hoTen << char(179);
+        cout << " " << left << setw(11) << Array[i]->gioitinh << char(179);
+        string trangThai = (Array[i]->trangThai == 1) ? "Hoat dong" : "Bi khoa";
+        cout << " " << left << setw(14) << trangThai << char(179);
+    }
+    
+    int soDongDaIn = endIndex - startIndex;
+    if (soDongDaIn > 0) {
+        gotoxy(4, START_Y + soDongDaIn);
+        cout << char(192) << string(6, char(196)) << char(193) << string(10, char(196)) << char(193)
+             << string(30, char(196)) << char(193) << string(12, char(196)) << char(193)
+             << string(15, char(196)) << char(217);
+    }
+    
+    gotoxy(35, 23); cout << "Trang " << page + 1 << " / " << totalPages;
+}
+
+TheDocGia** Insert_Order(TheDocGia** oldArray, int oldSize, TheDocGia* newElement){
+    int insert_pos = 0;
+    string newHoTen = newElement->ten + " " + newElement->ho;
+    string oldHoTen;
+    while(insert_pos < oldSize){
+        oldHoTen = oldArray[insert_pos]->ten + " " + oldArray[insert_pos]->ho;
+        if(newHoTen < oldHoTen) break;
+        insert_pos++;
+    }
+
+    TheDocGia** newArray = new TheDocGia*[oldSize + 1];
+    for(int i = 0; i<insert_pos; i++) newArray[i] = oldArray[i];
+
+    newArray[insert_pos] = newElement;
+
+    for(int i = insert_pos; i < oldSize; i++) newArray[i+1] = oldArray[i];
+    return newArray;
+}
+
+void ThemDocGia(TREE_DOCGIA &root) {
+    clrscr();
+    ShowCur(false);
+
+    int totalNode = countNodeDocGia(root);
+    TheDocGia** Array = new TheDocGia*[totalNode];
+    int index = 0;
+    InsertTreeToArray(root, Array, index);
+    QuickSortDocGia(Array, 0, totalNode -1);
+
+    const int ITEMS_PER_PAGE = 15;
+    int currentPage = 0;
+    int totalPages = (totalNode == 0) ? 1 : (totalNode - 1) / ITEMS_PER_PAGE + 1;
+    
+    VeKhungDanhSach();
+    HienThiTrangDocGia(Array, currentPage, totalPages, totalNode);
+
+    SetColor(8);
+    gotoxy(10, 22); cout << "[<-] [->]: Chuyen trang | [ENTER]: Them moi | [ESC]: Thoat";
+    SetColor(7);
+
+    while (true) {
+        int key = _getch();
+
+        if (key == 224) {
+            key = _getch();
+            if (key == 75 && currentPage > 0) {
+                currentPage--;
+            } else if (key == 77 && currentPage < totalPages - 1) {
+                currentPage++;
+            }
+            HienThiTrangDocGia(Array, currentPage, totalPages, totalNode);
+        } else if (key == 13) { // Phím ENTER
+            TheDocGia docgia;
+            if (Enter_DocGia(docgia)) {
+                int maThe = getMaTheTuFile("txt\\MaTheDocGia.txt");
+                if (maThe == -1) {
+                    ThongBao("DA HET MA THE, KHONG THE THEM DOC GIA MOI");
+                } else {
+                    docgia.maThe = maThe;
+                    InsertNode(root, docgia);
+                    save_File(root, "txt\\DanhSachDocGia.txt");
+                    ThongBao("THEM DOC GIA THANH CONG!");
+
+                    TheDocGia** newArray = Insert_Order(Array, totalNode, &docgia);
+                    delete[] Array;
+                    Array = newArray;
+                    totalNode++;
+                    totalPages = (totalNode == 0) ? 1 : (totalNode - 1) / ITEMS_PER_PAGE + 1;
+                    currentPage = 0;
+                }
+            } else {
+                // Người dùng hủy bằng ESC
+                ThongBao("DA HUY THAO TAC THEM DOC GIA");
+            }
+            XoaKhungNhapLieu();
+            cout << setfill(' ');
+            HienThiTrangDocGia(Array, currentPage, totalPages, totalNode);
+        } else if (key == 27) { // Phím ESC -> Thoát
             break;
         }
-    
-        int maThe = getMaTheTuFile("txt\\MaTheDocGia.txt");
-    
-        if(maThe == -1){
-            ThongBao("DA HET MA THE, KHONG THE THEM DOC GIA MOI");
-            return;
-        }
-    
-        docgia.maThe = maThe;
-    
-        InsertNode(root, docgia);
-        save_File(root, "txt\\DanhSachDocGia.txt");
-        
-        SetColor(10);
-        ThongBao("THEM DOC GIA THANH CONG!");
-        SetColor(7);
     }
+
+    delete[] Array;
+    cout << right;
 }
 
 void freeBST(TREE_DOCGIA &root){
@@ -157,26 +279,6 @@ void freeBST(TREE_DOCGIA &root){
     delete root;
     root = nullptr;
 }
-
-// void sortDocGiaByMaThe(TheDocGia dsDocGia[], int left, int right) {
-//     if(left >= right) return;
-//     int i = left;
-//     int j = right;
-
-//     int mid = dsDocGia[(left + right) / 2].maThe;
-//     while(i<=j){
-//         while(dsDocGia[i].maThe < mid) i++;
-//         while(dsDocGia[j].maThe > mid) j--;
-
-//         if(i<=j){
-//             swap(dsDocGia[i], dsDocGia[j]);
-//             i++;
-//             j--;
-//         }
-//     }
-//     if(left < j) sortDocGiaByMaThe(dsDocGia, left, j);
-//     if(i < right) sortDocGiaByMaThe(dsDocGia, i, right);
-// }
 
 string formatDate(const Date& d){
     if(d.ngay == -1 && d.thang == -1 && d.nam == -1) return "-1/-1/-1";
@@ -632,7 +734,6 @@ void XoaDocGia(TREE_DOCGIA &root) {
             continue;
         }
 
-        // 5. Tìm kiếm độc giả và xác nhận xóa
         TREE_DOCGIA p = Search(root, maTheToDelete);
         if (p == nullptr) {
             SetColor(12);

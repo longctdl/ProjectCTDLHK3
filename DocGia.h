@@ -45,10 +45,14 @@ typedef NodeTheDocGia* TREE_DOCGIA;
 TREE_DOCGIA createNode(TheDocGia docgia);
 void InsertNode(TREE_DOCGIA &root, TheDocGia docgia);
 int getMaTheTuFile(const char* filename);
+void VeKhungDanhSach();
+void VeKhungNhapLieu();
+void XoaKhungNhapLieu();
 bool Enter_DocGia(TheDocGia &docgia);
-void freeBST(TREE_DOCGIA &root);
-// void sortDocGiaByMaThe(TheDocGia dsDocGia[], int left, int right);
+void HienThiTrangDocGia(TheDocGia** Array, int page, int totalPages, int totalNode);
+TheDocGia** Insert_Order(TheDocGia** oldArray, int oldSize, TheDocGia* newElement);
 void ThemDocGia(TREE_DOCGIA &root);
+void freeBST(TREE_DOCGIA &root);
 
 // luu danh sach doc gia va danh sach muon tra
 string formatDate(const Date& d);
