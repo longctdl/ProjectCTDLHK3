@@ -66,7 +66,6 @@ PTRMT read_DSMuonTra(ifstream &fin);
 bool read_Docgia(ifstream &fin, TheDocGia &docgia);
 void read_File(TREE_DOCGIA &root, const char* filename);
 
-// void read_DSDocGia(TREE_DOCGIA &root, const char* filename = "txt\\DanhSachDocGia.txt");
 //ham ho tro hien thi danh sach va phan trang
 int countNodeDocGia(TREE_DOCGIA root);
 void collectDocGia(TREE_DOCGIA root, TheDocGia dsDocGia[], int& index);
@@ -88,6 +87,11 @@ void SuaDocGia(TREE_DOCGIA &root);
 void HienThiFormSua(int x, int y, const string &ho, const string &ten, const string &gioitinh, int trangthai, int currentField);
 
 // In danh sach muon cua doc gia
-void print_DsDangMuon(TREE_DOCGIA root); //test
-
+string Search_NameBook(DS_DauSach &ds, int maSach);
+int countNodeMuon(PTRMT First);
+void collectMuon(PTRMT First, MuonTra dsMuon[], int &index);
+void draw_GiaoDienXemDanhSachMuon();
+void XoaKhuVucMuonTra(int startX, int startY);
+void HienThiDanhSachMuon(MuonTra** Array, DS_DauSach &ds, int page, int totalPages, int totalNode, int startX, int startY);
+void print_DsDangMuon(TREE_DOCGIA root, DS_DauSach &ds);
 #endif

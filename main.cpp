@@ -315,9 +315,9 @@ void menu(TREE_DOCGIA &root, DS_DauSach &dsDauSach)
             { // Tra sach
             }
             else if (chon == 4)
-            { // in danh sach ma doc gia dang muon (thu)
+            {
                 ShowCur(true);
-                print_DsDangMuon(root);
+                print_DsDangMuon(root, dsDauSach);
                 getch();
             }
             else if (chon == 5)
