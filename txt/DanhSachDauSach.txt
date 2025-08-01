@@ -14,8 +14,8 @@ Not
 300
 2002
 Truyen Tranh
-0
-1|Ke 1|0
+1
+1|Ke 1|1
 2|Ke 2|0
 3|Ke 3|0
 #
@@ -57,7 +57,7 @@ Cong Nghe
 0
 11|Ke 11|0
 10|Ke 10|0
-9|Ke 9|0
+9|Ke 9|1
 #
 12233
 Toan
@@ -67,6 +67,6 @@ ptit
 Sach Giao Khoa
 0
 14|Ke C|0
-15|Ke C|0
+15|Ke C|1
 16|Ke C|0
 #

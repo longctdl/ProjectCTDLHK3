@@ -86,6 +86,15 @@ void XoaDocGia(TREE_DOCGIA &root);
 void SuaDocGia(TREE_DOCGIA &root);
 void HienThiFormSua(int x, int y, const string &ho, const string &ten, const string &gioitinh, int trangthai, int currentField);
 
+
+// Muon sach
+bool check_QuaHan(const Date& ngayMuon);
+bool check_Muon(TheDocGia& docgia);
+void InsertMuonTra(TheDocGia& docgia, int maSach, Date ngayMuon);
+bool updateSach(DS_DauSach& ds, int maSach, int newTrangThai);
+void muonSach(TREE_DOCGIA root, DS_DauSach& ds);
+
+
 // In danh sach muon cua doc gia
 string Search_NameBook(DS_DauSach &ds, int maSach);
 int countNodeMuon(PTRMT First);

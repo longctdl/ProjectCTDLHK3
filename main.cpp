@@ -263,6 +263,7 @@ void menu(TREE_DOCGIA &root, DS_DauSach &dsDauSach)
         "Muon sach",
         "Tra sach",
         "Cac sach doc gia dang muon",
+        "DS doc gia muon sach qua han",
         "Thong ke top 10 sach",
         "Thoat"};
     int chon = 0;
@@ -310,6 +311,9 @@ void menu(TREE_DOCGIA &root, DS_DauSach &dsDauSach)
             }
             else if (chon == 2)
             { // Muon sach
+                ShowCur(true);
+                muonSach(root, dsDauSach);
+                getch();
             }
             else if (chon == 3)
             { // Tra sach
@@ -318,7 +322,6 @@ void menu(TREE_DOCGIA &root, DS_DauSach &dsDauSach)
             {
                 ShowCur(true);
                 print_DsDangMuon(root, dsDauSach);
-                getch();
             }
             else if (chon == 5)
             {
@@ -351,6 +354,7 @@ int main()
 
     TREE_DOCGIA root = nullptr;
     read_File(root, "txt\\DanhSachDocGia.txt");
+    docDanhSachDauSachTuFile("txt\\DanhSachDauSach.txt", ds);
     menu(root, ds);
     freeBST(root);
 }

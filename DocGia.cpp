@@ -1081,6 +1081,102 @@ void HienThiFormSua(int x, int y, const string &ho, const string &ten, const str
     SetColor(7);
 }
 
+bool check_QuaHan(const Date& ngayMuon){
+    time_t now = time(0);
+    tm* today = localtime(&now);
+
+    Date currentDate = {today->tm_mday, today->tm_mon + 1, today->tm_year + 1900};
+    int numberDay = (currentDate.nam - ngayMuon.nam) * 365 +
+                (currentDate.thang - ngayMuon.thang) * 30 +
+                (currentDate.ngay - ngayMuon.ngay);
+    return numberDay > 7;
+}
+
+bool check_Muon(TheDocGia& docgia){
+    int countMuon = 0;
+    PTRMT p = docgia.dsMuonTra;
+    while(p!=nullptr){
+        if(p->data.trangThai == 0){
+            countMuon++;
+            if(check_QuaHan(p->data.ngayMuon)) return false;
+        }
+        p = p->next;
+    }
+    return countMuon < 3;
+}
+
+void InsertMuonTra(TheDocGia& docgia, int maSach, Date ngayMuon){
+    MuonTra p;
+    p.maSach = maSach;
+    p.ngayMuon = ngayMuon;
+    p.trangThai = 0;
+    p.ngayTra = {-1, -1, -1};
+
+    PTRMT newNode = new NodeMT{p, nullptr};
+    newNode->next = docgia.dsMuonTra;
+    docgia.dsMuonTra = newNode;
+}
+bool updateSach(DS_DauSach& ds, int maSach, int newTrangThai){
+    for(int i = 0; i<ds.soluong; i++){
+        PTRDMS p = ds.nodes[i].dms;
+        while(p!=nullptr){
+            if(p->data.maSach == maSach){
+                p->data.trangThai = newTrangThai;
+                return true;
+            }
+            p = p->next;
+        }
+    }
+    return false;
+}
+
+void muonSach(TREE_DOCGIA root, DS_DauSach& ds){
+    int maThe;
+    cout<<"Nhap ma the doc gia: ";
+    cin>>maThe;
+
+    TREE_DOCGIA p = Search(root, maThe);
+    if(p == nullptr){
+        cout<<"Khong tim thay doc gia voi ma the";
+        return;
+    }
+    if(!check_Muon(p->data)){
+        cout<<"Doc gia khong duoc muon sach vi da muon qua 3 cuon hoac qua han tra sach > 7!";
+        return;
+    }
+    int maSach;
+    cout<<"Nhap ma sach can muon: ";
+    cin>>maSach;
+
+    bool found = false;
+    PTRDMS pSach;
+    for(int i =0; i<ds.soluong; i++){
+        pSach = ds.nodes[i].dms;
+        while(pSach != nullptr){
+            if(pSach->data.maSach == maSach && pSach->data.trangThai == 0){
+                found = true;
+                break;
+            }
+            pSach = pSach->next;
+        }
+        if(found) break;
+    }
+    if(!found){
+        cout<<"Sach khong ton tai hoac da duoc muon!";
+        return;
+    }
+    time_t now = time(0);
+    tm* today = localtime(&now);
+    Date ngayMuon = { today->tm_mday, today->tm_mon + 1, today->tm_year + 1900 };
+
+    InsertMuonTra(p->data, maSach, ngayMuon);
+    ds.nodes[pSach->data.maSach].slmuon++;
+    save_File(root, "txt\\DanhSachDocGia.txt");
+    updateSach(ds, maSach, 1);
+    ghiDanhSachDauSachRaFile(ds, "txt\\DanhSachDauSach.txt");
+    cout<<"Muon sach thanh cong!"<<endl;
+}
+
 string Search_NameBook(DS_DauSach &ds, int maSach){
     for(int i =0; i< ds.soluong; i++){
         PTRDMS p = ds.nodes[i].dms;
@@ -1096,7 +1192,7 @@ int countNodeMuon(PTRMT First){
     int count = 0;
     PTRMT p = First;
     while(p!=nullptr){
-        if(p->data.trangThai == 0 || p->data.trangThai == 2) count++;
+        if(p->data.trangThai == 0) count++;
         p = p->next;
     }
     return count;
@@ -1105,7 +1201,7 @@ int countNodeMuon(PTRMT First){
 void collectMuon(PTRMT First, MuonTra dsMuon[], int &index){
     PTRMT p =First;
     while(p!=nullptr){
-        if(p->data.trangThai == 0 || p->data.trangThai == 2) dsMuon[index++] = p->data;
+        if(p->data.trangThai == 0) dsMuon[index++] = p->data;
         p = p->next;
     }
 }
@@ -1196,7 +1292,8 @@ void HienThiDanhSachMuon(MuonTra** Array, DS_DauSach &ds, int page, int totalPag
                           to_string(current->ngayMuon.nam);
         cout << " " << left << setw(11) << ngayMuon << char(179);
 
-        string trangThai = (current->trangThai == 0) ? "Dang muon" : "Mat";
+        string trangThai;
+        if(current->trangThai == 0) trangThai = "Dang muon";
         cout << " " << left << setw(11) << trangThai << char(179);
     }
 
@@ -1309,14 +1406,14 @@ void print_DsDangMuon(TREE_DOCGIA root, DS_DauSach &ds) {
                     ShowCur(true);
                     gotoxy(inputX + currentMaTheInput.length(), inputY);
                 }
-            } else if(key == 27){
-                ThongBao("DA HUY THAO TAC XEM SACH MUON");
+            }else if(key == 27){
                 ShowCur(false);
+                ThongBao("DA HUY THAO TAC XEM SACH MUON");
                 if(tempDocGiaArray != nullptr) delete[] tempDocGiaArray;
                 if(displayDGArray != nullptr) delete[] displayDGArray;
                 cout<<right;
                 return;
-            } else if (key == '\r' || key == '\n') { // Phím Enter
+            }else if (key == '\r' || key == '\n') { // Phím Enter
                 actionTaken = true;
             } else if (key == '\b') { // Phím Backspace
                 if (!currentMaTheInput.empty()) {
