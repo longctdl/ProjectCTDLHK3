@@ -444,7 +444,7 @@ void HienThiDanhSachDocGia(TheDocGia** Array, int page, int totalPages, int tota
     
     for(int i = 0; i < ITEMS_PER_PAGE + 2; i++){
         gotoxy(4, 6 + i);
-        clreol();
+        // clreol();
         cout<<string(80, ' ');
     }
 
@@ -1172,7 +1172,7 @@ void draw_GiaoDienMuonSach(){
 
     SetColor(8);
     gotoxy(2, 25);
-    cout << "[<-] [->]: Chuyen trang doc gia";
+    cout << "[Left] [Right]: Chuyen trang doc gia";
     gotoxy(2, 26);
     cout << "[Up] [Down]: Chuyen trang sach";
     gotoxy(2, 27);
@@ -1181,6 +1181,65 @@ void draw_GiaoDienMuonSach(){
     cout << "[ESC]: Thoat";
     SetColor(7);
 }
+
+void HienThi_List_Sach(Sach** Array, DS_DauSach& ds, int page, int totalPages, int totalNode) {
+    const int ITEMS_PER_PAGE = 5;
+    const int start_x = 84;
+    const int start_y = 6;
+
+    for (int i = 0; i < ITEMS_PER_PAGE + 1; ++i) {
+        gotoxy(start_x, start_y + i);
+        cout << string(61, ' ');
+    }
+    
+    gotoxy(start_x, 5); 
+    cout << char(195) << string(6, char(196)) << char(197)
+         << string(10, char(196)) << char(197)
+         << string(30, char(196)) << char(197)
+         << string(12, char(196)) << char(180);
+
+    int startIndex = page * ITEMS_PER_PAGE;
+    int endIndex = min(startIndex + ITEMS_PER_PAGE, totalNode);
+
+    for (int i = startIndex; i < endIndex; ++i) {
+        int row_y = start_y + (i - startIndex);
+        gotoxy(start_x, row_y);
+
+        int maSach = Array[i]->maSach;
+        string tenSach = Search_NameBook(ds, maSach);
+        string trangThai;
+
+        if (Array[i]->trangThai == 0) trangThai = "Co the muon";
+        else if (Array[i]->trangThai == 1) trangThai = "Da muon";
+        else trangThai = "Da thanh ly";
+
+        cout << char(179) << " " << left << setw(5) << (i + 1) << char(179)
+             << " " << left << setw(9) << maSach << char(179)
+             << " " << left << setw(29) << tenSach << char(179)
+             << " " << left << setw(11) << trangThai << char(179);
+    }
+    
+    for (int i = endIndex - startIndex; i < ITEMS_PER_PAGE; i++) {
+        int row_y = start_y + i;
+        gotoxy(start_x, row_y);
+        cout << char(179) << string(6, ' ') << char(179)
+             << string(10, ' ') << char(179)
+             << string(30, ' ') << char(179)
+             << string(12, ' ') << char(179);
+    }
+
+    gotoxy(start_x, start_y + ITEMS_PER_PAGE);
+    cout << char(192) << string(6, char(196)) << char(193)
+         << string(10, char(196)) << char(193)
+         << string(30, char(196)) << char(193)
+         << string(12, char(196)) << char(217);
+
+    gotoxy(start_x + 6, start_y + ITEMS_PER_PAGE + 2);
+    cout << "Trang " << page + 1 << "/" << totalPages;
+
+    SetColor(7);
+}
+
 
 void draw_EnterMuon(){
     SetColor(14);
@@ -1280,12 +1339,37 @@ bool Enter_Muon(TREE_DOCGIA root, DS_DauSach& ds, TREE_DOCGIA &pDocGia, int &maS
     return true;
 }
 
+int count_List_Sach(DS_DauSach& ds){
+    if (ds.soluong == 0) return 0;
+
+    int count = 0;
+    for(int i = 0; i < ds.soluong; i++){
+        PTRDMS p = ds.nodes[i].dms;
+        while(p != nullptr){
+            count++;
+            p = p->next;
+        }
+    }
+    return count;
+}
+
+
+void InsertSachToArray(DS_DauSach& ds, Sach** Array, int &index){
+    for(int i =0; i< ds.soluong; i++){
+        PTRDMS p = ds.nodes[i].dms;
+        while(p!=nullptr){
+            Array[index++] = &p->data;
+            p=p->next;
+        }
+    }
+}
+
 void BorrowBook(TREE_DOCGIA root, DS_DauSach& ds){
     clrscr();
     ShowCur(false);
 
-    if(root == nullptr){
-        ThongBao("Danh sach doc gia tron!");
+    if(root == nullptr || ds.soluong == 0){
+        ThongBao("Danh sach doc gia trong hoac danh sach dau sach rong!");
         return;
     }
     int totalNode_DG = countNodeDocGia(root);
@@ -1299,15 +1383,35 @@ void BorrowBook(TREE_DOCGIA root, DS_DauSach& ds){
     int totalPages_DG = (totalNode_DG - 1) / ITEMS_PER_PAGE + 1;
     HienThiDanhSachDocGia(Array_DG, currentPage_DG, totalPages_DG, totalNode_DG);
 
+    int totalNode_Sach = count_List_Sach(ds);
+    Sach** Array_Sach = new Sach*[totalNode_Sach];
+    int indexSach = 0;
+    InsertSachToArray(ds, Array_Sach, indexSach);
+    const int ITEMS_PER_PAGE_SACH = 5;
+    int currentPage_SACH = 0;
+    int totalPages_SACH = (totalNode_Sach - 1) / ITEMS_PER_PAGE_SACH + 1;
+    HienThi_List_Sach(Array_Sach, ds, currentPage_SACH, totalPages_SACH, totalNode_Sach);
+
     int key;
     while(true){
         key = _getch();
 
         if(key == 224){
             key = _getch();
-            if(key == 75 && currentPage_DG > 0) currentPage_DG--;
-            else if(key == 77 && currentPage_DG < totalPages_DG - 1) currentPage_DG++;
-            HienThiDanhSachDocGia(Array_DG, currentPage_DG, totalPages_DG, totalNode_DG);
+            if(key == 75 && currentPage_DG > 0){
+                currentPage_DG--;
+                HienThiDanhSachDocGia(Array_DG, currentPage_DG, totalPages_DG, totalNode_DG);
+            }else if(key == 77 && currentPage_DG < totalPages_DG - 1){
+                currentPage_DG++;
+                HienThiDanhSachDocGia(Array_DG, currentPage_DG, totalPages_DG, totalNode_DG);
+            }else if(key == 72 && currentPage_SACH > 0){
+                currentPage_SACH--;
+                HienThi_List_Sach(Array_Sach, ds, currentPage_SACH, totalPages_SACH, totalNode_Sach);
+            }
+            else if(key == 80 && currentPage_SACH < totalPages_SACH -1){
+                currentPage_SACH++;
+                HienThi_List_Sach(Array_Sach, ds, currentPage_SACH, totalPages_SACH, totalNode_Sach);
+            }
         } else if(key == 13){
             TREE_DOCGIA pDocGia = nullptr;
             int maSach = -1;
@@ -1315,22 +1419,32 @@ void BorrowBook(TREE_DOCGIA root, DS_DauSach& ds){
             if(Enter_Muon(root, ds, pDocGia, maSach, IndexDauSach)){
                 time_t now = time(0);
                 tm* today = localtime(&now);
-                Date ngayMuon = {today->tm_mday, today->tm_mon + 1, today->tm_year + 1990};
+                Date ngayMuon = {today->tm_mday, today->tm_mon + 1, today->tm_year + 1900};
 
                 InsertMuonTra(pDocGia->data, maSach, ngayMuon);
                 updateSach(ds, maSach, 1);
                 ds.nodes[IndexDauSach].slmuon++;
                 save_File(root, "txt\\DanhSachDocGia.txt");
                 ghiDanhSachDauSachRaFile(ds, "txt\\DanhSachDauSach.txt");
+
+                //cap nhat lai bang hien thi sach
+                delete[] Array_Sach;
+                Array_Sach = new Sach*[totalNode_Sach];
+                int indexSach = 0;
+                InsertSachToArray(ds, Array_Sach, indexSach);
                 ThongBaoMuon("Muon sach thanh cong!");
             } else {
                 ThongBaoMuon("DA HUY THAO TAC MUON SACH");
             }
+            cout<<setfill(' ');
+            HienThiDanhSachDocGia(Array_DG, currentPage_DG, totalPages_DG, totalNode_DG);
+            HienThi_List_Sach(Array_Sach, ds, currentPage_SACH, totalPages_SACH, totalNode_Sach);
         } else if(key == 27){
             break;
         }
     }
     delete[] Array_DG;
+    delete[] Array_Sach;
     cout<<right;
 }
 

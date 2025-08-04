@@ -93,9 +93,12 @@ bool check_Muon(TheDocGia& docgia);
 void InsertMuonTra(TheDocGia& docgia, int maSach, Date ngayMuon);
 bool updateSach(DS_DauSach& ds, int maSach, int newTrangThai);
 void draw_GiaoDienMuonSach();
+void HienThi_List_Sach(Sach** Array, DS_DauSach& ds, int page, int totalPages, int totalNode);
 void draw_EnterMuon();
 void Delete_KhungEnter_Muon();
 bool Enter_Muon(TREE_DOCGIA root, DS_DauSach& ds, TREE_DOCGIA &pDocGia, int &maSachOut, int &IndexDauSach);
+int count_List_Sach(DS_DauSach& ds);
+void InsertSachToArray(DS_DauSach& ds, Sach** Array, int &index);
 void BorrowBook(TREE_DOCGIA root, DS_DauSach& ds);
 void muonSach(TREE_DOCGIA root, DS_DauSach& ds);
 

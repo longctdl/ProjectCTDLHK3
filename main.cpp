@@ -313,7 +313,6 @@ void menu(TREE_DOCGIA &root, DS_DauSach &dsDauSach)
             { // Muon sach
                 ShowCur(true);
                 // muonSach(root, dsDauSach);
-                // draw_GiaoDienMuonSach();
                 BorrowBook(root, dsDauSach);
                 getch();
             }
