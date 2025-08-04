@@ -1130,6 +1130,210 @@ bool updateSach(DS_DauSach& ds, int maSach, int newTrangThai){
     return false;
 }
 
+void draw_GiaoDienMuonSach(){
+    clrscr();
+    SetColor(14);
+    CreateBoxDouble(50, 1, "   MUON SACH   ", 16);
+    cout<< setfill(' ');
+    SetColor(7);
+
+    gotoxy(4, 3);
+    cout << char(218) << string(6, char(196)) << char(194) << string(10, char(196)) << char(194)
+         << string(30, char(196)) << char(194) << string(12, char(196)) << char(194)
+         << string(15, char(196)) << char(191);
+    
+    gotoxy(4, 4);
+    cout << char(179) << " " << left << setw(5) << "STT" << char(179) << " " << left << setw(9) << "Ma The"
+         << char(179) << " " << left << setw(29) << "Ho va Ten" << char(179) << " " << left << setw(11) << "Gioi Tinh"
+         << char(179) << " " << left << setw(14) << "Trang Thai" << char(179);
+    
+    gotoxy(4, 5);
+    cout << char(195) << string(6, char(196)) << char(197) << string(10, char(196)) << char(197)
+         << string(30, char(196)) << char(197) << string(12, char(196)) << char(197)
+         << string(15, char(196)) << char(180);
+
+    gotoxy(84, 3);
+    cout << char(218) << string(6, char(196)) << char(194)
+        << string(10, char(196)) << char(194)
+        << string(30, char(196)) << char(194)
+        << string(12, char(196)) << char(191);
+
+    gotoxy(84, 4);
+    cout << char(179) << " " << left << setw(5) << "STT" << char(179)
+        << " " << left << setw(9) << "Ma Sach" << char(179)
+        << " " << left << setw(29) << "Ten Sach" << char(179)
+        << " " << left << setw(11) << "Trang Thai" << char(179);
+
+    gotoxy(84, 5);
+    cout << char(192) << string(6, char(196)) << char(193)
+        << string(10, char(196)) << char(193)
+        << string(30, char(196)) << char(193)
+        << string(12, char(196)) << char(217);
+
+    SetColor(8);
+    gotoxy(2, 25);
+    cout << "[<-] [->]: Chuyen trang doc gia";
+    gotoxy(2, 26);
+    cout << "[Up] [Down]: Chuyen trang sach";
+    gotoxy(2, 27);
+    cout << "[Enter]: Muon sach";
+    gotoxy(2, 28);
+    cout << "[ESC]: Thoat";
+    SetColor(7);
+}
+
+void draw_EnterMuon(){
+    SetColor(14);
+    CreateBoxDouble(100, 20, "   NHAP THONG TIN MUON SACH   ", 30);
+    SetColor(7);
+
+    gotoxy(98, 22); cout << char(218) << string(30, char(196)) << char(191);
+    for (int i = 23; i < 27; ++i) { 
+        gotoxy(98, i); cout << char(179);
+        gotoxy(129, i); cout << char(179);
+    }
+    gotoxy(98, 27); cout << char(192) << string(30, char(196)) << char(217);
+
+    gotoxy(104, 24);  cout << "Ma do gia: ";
+    gotoxy(104, 25);  cout << "Ma sach  : ";
+
+    SetColor(8);
+    gotoxy(104, 28); cout << "Meo: Nhan [ESC] de huy bo.";
+    SetColor(7);
+}
+
+void Delete_KhungEnter_Muon(){
+    for(int i = 19; i < 35; ++i){
+        gotoxy(98, i);
+        cout<<string(45, ' ');
+    }
+}
+
+bool Enter_Muon(TREE_DOCGIA root, DS_DauSach& ds, TREE_DOCGIA &pDocGia, int &maSachOut, int &IndexDauSach){
+    ShowCur(true);
+    draw_EnterMuon();
+
+    const int INPUT_X = 116;
+    string maThe, maSach;
+    while(true){
+        gotoxy(INPUT_X, 24); cout<< string(10,' ');
+        maThe = inputNumber(INPUT_X, 24, 10);
+        if(maThe == INPUT_CANCELLED){
+            ShowCur(false);
+            Delete_KhungEnter_Muon();
+            return false;
+        }
+        if(maThe.empty()){
+            ThongBaoMuon("Vui long nhap ma the doc gia!");
+            continue;
+        }
+        pDocGia = Search(root, stoi(maThe));
+        if(pDocGia == nullptr){
+            ThongBaoMuon("Khong tim thay doc gia!");
+            continue;
+        }
+        if(pDocGia->data.trangThai == 0){
+            ThongBaoMuon("Doc gia bi khoa, khong the muon sach!");
+            continue;
+        }
+        if(!check_Muon(pDocGia->data)){
+            ThongBaoMuon("Doc gia khong duoc muon sach vi da muon qua 3 cuon hoac qua han tra sach > 7!");
+            continue;
+        }
+        break;
+    }
+    while(true){
+        gotoxy(INPUT_X, 25); cout<<string(10, ' ');
+        maSach = inputNumber(INPUT_X, 25, 10);
+        if(maSach == INPUT_CANCELLED){
+            ShowCur(false);
+            Delete_KhungEnter_Muon();
+            return false;
+        }
+        if(maSach.empty()){
+            ThongBaoMuon("Vui long nhap ma sach!");
+            continue;
+        }
+        maSachOut = stoi(maSach);
+        bool found = false;
+        PTRDMS pSach;
+        for(int i =0; i<ds.soluong; i++){
+            pSach = ds.nodes[i].dms;
+            while(pSach != nullptr){
+                if(pSach->data.maSach == stoi(maSach) && pSach->data.trangThai == 0){
+                    found = true;
+                    IndexDauSach = i;
+                    break;
+                }
+                pSach = pSach->next;
+            }
+            if(found) break;
+        }
+        if(!found){
+            ThongBaoMuon("Sach khong ton tai hoac da duoc muon!");
+            continue;
+        }
+        break;
+    }
+    ShowCur(false);
+    Delete_KhungEnter_Muon();
+    return true;
+}
+
+void BorrowBook(TREE_DOCGIA root, DS_DauSach& ds){
+    clrscr();
+    ShowCur(false);
+
+    if(root == nullptr){
+        ThongBao("Danh sach doc gia tron!");
+        return;
+    }
+    int totalNode_DG = countNodeDocGia(root);
+    TheDocGia** Array_DG = new TheDocGia*[totalNode_DG];
+    int index = 0;
+    InsertTreeToArray(root, Array_DG, index);
+
+    draw_GiaoDienMuonSach();
+    const int ITEMS_PER_PAGE = 15;
+    int currentPage_DG = 0;
+    int totalPages_DG = (totalNode_DG - 1) / ITEMS_PER_PAGE + 1;
+    HienThiDanhSachDocGia(Array_DG, currentPage_DG, totalPages_DG, totalNode_DG);
+
+    int key;
+    while(true){
+        key = _getch();
+
+        if(key == 224){
+            key = _getch();
+            if(key == 75 && currentPage_DG > 0) currentPage_DG--;
+            else if(key == 77 && currentPage_DG < totalPages_DG - 1) currentPage_DG++;
+            HienThiDanhSachDocGia(Array_DG, currentPage_DG, totalPages_DG, totalNode_DG);
+        } else if(key == 13){
+            TREE_DOCGIA pDocGia = nullptr;
+            int maSach = -1;
+            int IndexDauSach = -1;
+            if(Enter_Muon(root, ds, pDocGia, maSach, IndexDauSach)){
+                time_t now = time(0);
+                tm* today = localtime(&now);
+                Date ngayMuon = {today->tm_mday, today->tm_mon + 1, today->tm_year + 1990};
+
+                InsertMuonTra(pDocGia->data, maSach, ngayMuon);
+                updateSach(ds, maSach, 1);
+                ds.nodes[IndexDauSach].slmuon++;
+                save_File(root, "txt\\DanhSachDocGia.txt");
+                ghiDanhSachDauSachRaFile(ds, "txt\\DanhSachDauSach.txt");
+                ThongBaoMuon("Muon sach thanh cong!");
+            } else {
+                ThongBaoMuon("DA HUY THAO TAC MUON SACH");
+            }
+        } else if(key == 27){
+            break;
+        }
+    }
+    delete[] Array_DG;
+    cout<<right;
+}
+
 void muonSach(TREE_DOCGIA root, DS_DauSach& ds){
     int maThe;
     cout<<"Nhap ma the doc gia: ";
@@ -1138,6 +1342,10 @@ void muonSach(TREE_DOCGIA root, DS_DauSach& ds){
     TREE_DOCGIA p = Search(root, maThe);
     if(p == nullptr){
         cout<<"Khong tim thay doc gia voi ma the";
+        return;
+    }
+    if(p->data.trangThai == 0){
+        cout<<"Doc gia bi khoa, khong the muon sach!";
         return;
     }
     if(!check_Muon(p->data)){
@@ -1244,7 +1452,7 @@ void XoaKhuVucMuonTra(int startX, int startY){
 
 void HienThiDanhSachMuon(MuonTra** Array, DS_DauSach &ds, int page, int totalPages, int totalNode, int startX, int startY) {
     SetColor(7);
-    const int ITEMS_PER_PAGE_MUON = 5; 
+    const int ITEMS_PER_PAGE_MUON = 5;
     
     for(int i = 0; i < ITEMS_PER_PAGE_MUON + 5; ++i) {
         gotoxy(startX, startY + i);
