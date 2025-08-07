@@ -137,10 +137,10 @@ void ThongBao(const char *s){
 
 void ThongBaoMuon(const char *s){
     int x = wherex(), y = wherey();
-    gotoxy(104, 30);
+    gotoxy(79, 35);
     cout << s;
     Sleep(2000);
-    gotoxy(104, 30);
+    gotoxy(79, 35);
     clreol();
     gotoxy(x, y);
 }

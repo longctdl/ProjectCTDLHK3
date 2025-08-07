@@ -312,12 +312,11 @@ void menu(TREE_DOCGIA &root, DS_DauSach &dsDauSach)
             else if (chon == 2)
             { // Muon sach
                 ShowCur(true);
-                // muonSach(root, dsDauSach);
                 BorrowBook(root, dsDauSach);
-                getch();
             }
             else if (chon == 3)
             { // Tra sach
+                ReturnBook(root, dsDauSach);
             }
             else if (chon == 4)
             {

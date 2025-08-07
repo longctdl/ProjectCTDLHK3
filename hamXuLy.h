@@ -116,7 +116,7 @@ char GetYesNoInput(int x, int y){
             return lowerChar;
         } else{
             SetColor(12); //mau do
-            ThongBao("Vui long nhap y/n");
+            ThongBaoMuon("Vui long nhap y/n");
             SetColor(7);
         }
 

@@ -90,6 +90,8 @@ void HienThiFormSua(int x, int y, const string &ho, const string &ten, const str
 // Muon sach
 bool check_QuaHan(const Date& ngayMuon);
 bool check_Muon(TheDocGia& docgia);
+string Search_ISBN(DS_DauSach& ds, int maSach);
+bool check_trungDauSach(PTRMT First, DS_DauSach& ds, int maSach);
 void InsertMuonTra(TheDocGia& docgia, int maSach, Date ngayMuon);
 bool updateSach(DS_DauSach& ds, int maSach, int newTrangThai);
 void draw_GiaoDienMuonSach();
@@ -100,8 +102,14 @@ bool Enter_Muon(TREE_DOCGIA root, DS_DauSach& ds, TREE_DOCGIA &pDocGia, int &maS
 int count_List_Sach(DS_DauSach& ds);
 void InsertSachToArray(DS_DauSach& ds, Sach** Array, int &index);
 void BorrowBook(TREE_DOCGIA root, DS_DauSach& ds);
-void muonSach(TREE_DOCGIA root, DS_DauSach& ds);
 
+//Tra Sach
+void draw_GiaoDienTraSach();
+void DrawTable_BorrowingBook(MuonTra* Array, DS_DauSach &ds, int totalNode, int startX, int startY);
+bool check_SachTra(PTRMT First, int maSach);
+void XoaKhuVucTraSach();
+bool Enter_Tra(TREE_DOCGIA root, DS_DauSach& ds, TREE_DOCGIA &p, int &maSachOut);
+void ReturnBook(TREE_DOCGIA root, DS_DauSach& ds);
 
 // In danh sach muon cua doc gia
 string Search_NameBook(DS_DauSach &ds, int maSach);
