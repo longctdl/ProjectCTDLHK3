@@ -92,7 +92,7 @@ bool check_QuaHan(const Date& ngayMuon);
 bool check_Muon(TheDocGia& docgia);
 string Search_ISBN(DS_DauSach& ds, int maSach);
 bool check_trungDauSach(PTRMT First, DS_DauSach& ds, int maSach);
-void InsertMuonTra(TheDocGia& docgia, int maSach, Date ngayMuon);
+void InsertMuonTra(TheDocGia& docgia, int maSach, Date ngayMuon, bool isMuon);
 bool updateSach(DS_DauSach& ds, int maSach, int newTrangThai);
 void draw_GiaoDienMuonSach();
 void HienThi_List_Sach(Sach** Array, DS_DauSach& ds, int page, int totalPages, int totalNode);
@@ -119,4 +119,7 @@ void draw_GiaoDienXemDanhSachMuon();
 void XoaKhuVucMuonTra(int startX, int startY);
 void HienThiDanhSachMuon(MuonTra** Array, DS_DauSach &ds, int page, int totalPages, int totalNode, int startX, int startY);
 void print_DsDangMuon(TREE_DOCGIA root, DS_DauSach &ds);
+
+// In danh sach doc gia muon sach qua han theo thu tu thoi gian giam dan
+
 #endif
