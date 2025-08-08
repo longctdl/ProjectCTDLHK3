@@ -1083,17 +1083,20 @@ void HienThiFormSua(int x, int y, const string &ho, const string &ten, const str
 
 bool check_QuaHan(const Date& ngayMuon){
     time_t now = time(0);
+    tm* today = localtime(&now);
+    tm tm_now = *today;
+    tm_now.tm_hour = 0; tm_now.tm_min = 0; tm_now.tm_sec = 0;
+    time_t time_today = mktime(&tm_now);
 
     tm tm_ngayMuon = {};
     tm_ngayMuon.tm_year = ngayMuon.nam - 1900;
     tm_ngayMuon.tm_mon = ngayMuon.thang - 1;
     tm_ngayMuon.tm_mday = ngayMuon.ngay;
-
+    tm_ngayMuon.tm_hour = 0; tm_ngayMuon.tm_min = 0; tm_ngayMuon.tm_sec = 0;
     time_t time_muon = mktime(&tm_ngayMuon);
-    double seconds_diff = difftime(now, time_muon);
-    double days_diff = seconds_diff / 86400.0; //(60*60*24)
 
-    return days_diff > 7.0;
+    int days_diff = (int)((time_today - time_muon) / 86400);
+    return days_diff > 7;
 }
 
 bool check_Muon(TheDocGia& docgia){
@@ -2116,4 +2119,181 @@ void print_DsDangMuon(TREE_DOCGIA root, DS_DauSach &ds) {
     if (tempDocGiaArray != nullptr) delete[] tempDocGiaArray;
     if (displayDGArray != nullptr) delete[] displayDGArray;
     cout << right;
+}
+
+int Dem_NgayQuaHan(const Date& ngayMuon) {
+    time_t now = time(0);
+    tm tm_ngayMuon = {};
+    tm_ngayMuon.tm_year = ngayMuon.nam - 1900;
+    tm_ngayMuon.tm_mon = ngayMuon.thang - 1;
+    tm_ngayMuon.tm_mday = ngayMuon.ngay;
+    time_t time_muon = mktime(&tm_ngayMuon);
+    int days_diff = (int)(difftime(now, time_muon) / 86400.0);
+    return (days_diff > 7) ? (days_diff - 7) : 0;
+}
+
+void DrawTable_QuaHan(TREE_DOCGIA* dgArr, PTRMT* mtArr, DS_DauSach &ds, int page, int totalPages, int totalNode, int startX, int startY) {
+    clrscr();
+    ShowCur(false);
+    SetColor(14);
+    CreateBoxDouble(50, 1, "   DANH SACH DOC GIA MUON QUA HAN   ", 36);
+    cout<< setfill(' ');
+    SetColor(7);
+
+    const int ITEMS_PER_PAGE = 15;
+
+    gotoxy(startX, startY);
+    cout << char(218) << string(5, char(196)) << char(194)
+         << string(25, char(196)) << char(194)
+         << string(10, char(196)) << char(194)
+         << string(10, char(196)) << char(194)
+         << string(25, char(196)) << char(194)
+         << string(15, char(196)) << char(194)
+         << string(12, char(196)) << char(191);
+
+    gotoxy(startX, startY + 1);
+    cout << char(179) << " " << left << setw(4) << "STT" << char(179)
+         << " " << left << setw(24) << "Ho va Ten" << char(179)
+         << " " << left << setw(9) << "Gioi Tinh" << char(179)
+         << " " << left << setw(9) << "Ma Sach" << char(179)
+         << " " << left << setw(24) << "Ten Sach" << char(179)
+         << " " << left << setw(14) << "Ngay Muon" << char(179)
+         << " " << left << setw(11) << "Qua Han" << char(179);
+
+    gotoxy(startX, startY + 2);
+    cout << char(195) << string(5, char(196)) << char(197)
+         << string(25, char(196)) << char(197)
+         << string(10, char(196)) << char(197)
+         << string(10, char(196)) << char(197)
+         << string(25, char(196)) << char(197)
+         << string(15, char(196)) << char(197)
+         << string(12, char(196)) << char(180);
+
+    int startIndex = page * ITEMS_PER_PAGE;
+    int endIndex = min(startIndex + ITEMS_PER_PAGE, totalNode);
+
+    for (int i = startIndex; i < endIndex; ++i) {
+        int row = startY + 3 + (i - startIndex);
+        gotoxy(startX, row);
+        string hoten = dgArr[i]->data.ho + " " + dgArr[i]->data.ten;
+        string gioitinh = dgArr[i]->data.gioitinh;
+        int maSach = mtArr[i]->data.maSach;
+        string tenSach = Search_NameBook(ds, maSach);
+        string ngayMuon = to_string(mtArr[i]->data.ngayMuon.ngay) + "/" +
+                          to_string(mtArr[i]->data.ngayMuon.thang) + "/" +
+                          to_string(mtArr[i]->data.ngayMuon.nam);
+        int daysLate = Dem_NgayQuaHan(mtArr[i]->data.ngayMuon);
+
+        cout << char(179) << " " << left << setw(4) << i + 1 << char(179)
+             << " " << left << setw(24) << hoten << char(179)
+             << " " << left << setw(9) << gioitinh << char(179)
+             << " " << left << setw(9) << maSach << char(179)
+             << " " << left << setw(24) << tenSach << char(179)
+             << " " << left << setw(14) << ngayMuon << char(179)
+             << " " << left << setw(11) << daysLate << char(179);
+    }
+
+    for (int i = endIndex - startIndex; i < ITEMS_PER_PAGE; ++i) {
+        int row = startY + 3 + i;
+        gotoxy(startX, row);
+        cout << char(179) << string(5, ' ') << char(179)
+             << string(25, ' ') << char(179)
+             << string(10, ' ') << char(179)
+             << string(10, ' ') << char(179)
+             << string(25, ' ') << char(179)
+             << string(15, ' ') << char(179)
+             << string(12, ' ') << char(179);
+    }
+
+    int footerY = startY + 3 + ITEMS_PER_PAGE;
+    gotoxy(startX, footerY);
+    cout << char(192) << string(5, char(196)) << char(193)
+         << string(25, char(196)) << char(193)
+         << string(10, char(196)) << char(193)
+         << string(10, char(196)) << char(193)
+         << string(25, char(196)) << char(193)
+         << string(15, char(196)) << char(193)
+         << string(12, char(196)) << char(217);
+
+    gotoxy(startX + 40, footerY + 1);
+    cout << "Trang " << page + 1 << " / " << totalPages;
+    SetColor(8);
+    gotoxy(2, 25); cout << "[<-] [->]: Chuyen trang";
+    gotoxy(2,26); cout << "[ESC]: Thoat";
+    SetColor(7);
+}
+
+void collectQuaHanPtr(TREE_DOCGIA root, TREE_DOCGIA* dgArr, PTRMT* mtArr, int &index) {
+    if(root == nullptr) return;
+    collectQuaHanPtr(root->left, dgArr, mtArr, index);
+    PTRMT p = root->data.dsMuonTra;
+    while(p != nullptr){
+        if(check_QuaHan(p->data.ngayMuon) && p->data.trangThai == 0){
+            dgArr[index] = root;
+            mtArr[index] = p;
+            index++;
+        }
+        p = p->next;
+    }
+    collectQuaHanPtr(root->right, dgArr, mtArr, index);
+}
+
+int count_QuaHan(TREE_DOCGIA root) {
+    if (root == nullptr) return 0;
+    int count = 0;
+    PTRMT p = root->data.dsMuonTra;
+    while (p != nullptr) {
+        if (check_QuaHan(p->data.ngayMuon) && p->data.trangThai == 0) count++;
+        p = p->next;
+    }
+    return count + count_QuaHan(root->left) + count_QuaHan(root->right);
+}
+
+void SelectionSortQuaHan(TREE_DOCGIA* dgArr, PTRMT* mtArr, int n) {
+    for(int i = 0; i < n - 1; ++i) {
+        int maxIdx = i;
+        int maxDays = Dem_NgayQuaHan(mtArr[i]->data.ngayMuon);
+        for(int j = i + 1; j < n; ++j) {
+            int daysJ = Dem_NgayQuaHan(mtArr[j]->data.ngayMuon);
+            if(daysJ > maxDays) {
+                maxIdx = j;
+                maxDays = daysJ;
+            }
+        }
+        if(maxIdx != i) {
+            swap(dgArr[i], dgArr[maxIdx]);
+            swap(mtArr[i], mtArr[maxIdx]);
+        }
+    }
+}
+
+void print_QuaHan(TREE_DOCGIA root, DS_DauSach &ds){
+    int countNode = count_QuaHan(root);
+    if(countNode == 0){
+        ThongBao("Khong co doc gia nao muon sach qua han!");
+        return;
+    }
+    TREE_DOCGIA* dgArr = new TREE_DOCGIA[countNode];
+    PTRMT* mtArr = new PTRMT[countNode];
+    int index = 0;
+    collectQuaHanPtr(root, dgArr, mtArr, index);
+
+    SelectionSortQuaHan(dgArr, mtArr, index);
+
+    const int ITEMS_PER_PAGE = 15;
+    int currentPage = 0;
+    int totalPages = (index == 0) ? 1 : (index - 1) / ITEMS_PER_PAGE + 1;
+    int key;
+    while (true) {
+        DrawTable_QuaHan(dgArr, mtArr, ds, currentPage, totalPages, index, 4, 3);
+        key = _getch();
+        if (key == 224) {
+            key = _getch();
+            if (key == 75 && currentPage > 0) currentPage--;
+            else if (key == 77 && currentPage < totalPages - 1) currentPage++;
+        } else if (key == 27) break;
+    }
+    delete[] dgArr;
+    delete[] mtArr;
+    cout<<right;
 }

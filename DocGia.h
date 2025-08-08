@@ -121,5 +121,10 @@ void HienThiDanhSachMuon(MuonTra** Array, DS_DauSach &ds, int page, int totalPag
 void print_DsDangMuon(TREE_DOCGIA root, DS_DauSach &ds);
 
 // In danh sach doc gia muon sach qua han theo thu tu thoi gian giam dan
-
+int Dem_NgayQuaHan(const Date& ngayMuon);
+void DrawTable_QuaHan(TREE_DOCGIA* dgArr, PTRMT* mtArr, DS_DauSach &ds, int page, int totalPages, int totalNode, int startX, int startY);
+void collectQuaHanPtr(TREE_DOCGIA root, TREE_DOCGIA* dgArr, PTRMT* mtArr, int &index);
+int count_QuaHan(TREE_DOCGIA root);
+void SelectionSortQuaHan(TREE_DOCGIA* dgArr, PTRMT* mtArr, int n);
+void print_QuaHan(TREE_DOCGIA root, DS_DauSach &ds);
 #endif
