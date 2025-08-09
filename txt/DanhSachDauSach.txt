@@ -5,8 +5,8 @@ PTIT
 2022
 Cong Nghe
 2
-7|Ke 1|1
 8|Ke 2|0
+7|Ke 1|1
 #
 1233
 Dragon ball
@@ -15,9 +15,9 @@ Not
 2002
 Truyen Tranh
 2
-1|Ke 1|1
-2|Ke 2|0
 3|Ke 3|1
+2|Ke 2|0
+1|Ke 1|1
 #
 12333
 Lap Trinh C
@@ -25,8 +25,8 @@ Ptit
 250
 2020
 Cong Nghe
-0
-4|Ke 4|0
+1
+4|Ke 4|1
 #
 12223
 Lap Trinh web
@@ -34,9 +34,9 @@ PTIT
 200
 2025
 Cong nghe
-0
+1
+6|Ke 6|1
 5|Ke 5|0
-6|Ke 6|0
 #
 11221
 Naruto
@@ -44,9 +44,9 @@ Kishimoto
 100
 1999
 Truyen Tranh
-1
+2
+13|Ke 13|1
 12|Ke 12|1
-13|Ke 13|0
 #
 12335
 OOP
@@ -55,9 +55,9 @@ Ptit
 2022
 Cong Nghe
 3
-11|Ke 11|1
-10|Ke 10|1
 9|Ke 9|1
+10|Ke 10|1
+11|Ke 11|1
 #
 12233
 Toan
@@ -65,8 +65,8 @@ ptit
 120
 2025
 Sach Giao Khoa
-3
-14|Ke C|1
+4
+16|Ke C|1
 15|Ke C|1
-16|Ke C|0
+14|Ke C|1
 #

@@ -2297,3 +2297,154 @@ void print_QuaHan(TREE_DOCGIA root, DS_DauSach &ds){
     delete[] mtArr;
     cout<<right;
 }
+
+void heapifyUp(DauSach heap[], int i) {
+    int parent = (i - 1) / 2;
+    while (i > 0 && heap[i].slmuon < heap[parent].slmuon) {
+        swap(heap[i], heap[parent]);
+        i = parent;
+        parent = (i - 1) / 2;
+    }
+}
+
+// Đưa phần tử xuống đúng vị trí trong min-heap
+void heapifyDown(DauSach heap[], int n, int i) {
+    int smallest = i;
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
+
+    if (left < n && heap[left].slmuon < heap[smallest].slmuon)
+        smallest = left;
+    if (right < n && heap[right].slmuon < heap[smallest].slmuon)
+        smallest = right;
+
+    if (smallest != i) {
+        swap(heap[i], heap[smallest]);
+        heapifyDown(heap, n, smallest);
+    }
+}
+
+void selectionSort(DauSach arr[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        int maxIdx = i;
+        for (int j = i + 1; j < n; j++) {
+            if (arr[j].slmuon > arr[maxIdx].slmuon) {
+                maxIdx = j;
+            }
+        }
+        if (maxIdx != i) {
+            swap(arr[i], arr[maxIdx]);
+        }
+    }
+}
+
+void DrawTable_Top10(DauSach arr[], int n) {
+    clrscr();
+    ShowCur(false);
+    SetColor(14);
+    CreateBoxDouble(50, 1, "   TOP 10 SACH DUOC MUON NHIEU NHAT   ", 38);
+    cout<<setfill(' ');
+    SetColor(7);
+
+    gotoxy(2, 3);
+    cout << char(218) << string(5, char(196)) << char(194)
+         << string(15, char(196)) << char(194)
+         << string(30, char(196)) << char(194)
+         << string(10, char(196)) << char(194)
+         << string(20, char(196)) << char(194)
+         << string(12, char(196)) << char(194)
+         << string(15, char(196)) << char(194)
+         << string(12, char(196)) << char(191);
+
+    gotoxy(2, 4);
+    cout << char(179) << " " << left << setw(4) << "STT" << char(179)
+         << " " << left << setw(14) << "ISBN" << char(179)
+         << " " << left << setw(29) << "Ten Sach" << char(179)
+         << " " << left << setw(9) << "So Trang" << char(179)
+         << " " << left << setw(19) << "Tac Gia" << char(179)
+         << " " << left << setw(11) << "Nam XB" << char(179)
+         << " " << left << setw(14) << "The Loai" << char(179)
+         << " " << left << setw(11) << "SL Muon" << char(179);
+
+    gotoxy(2, 5);
+    cout << char(195) << string(5, char(196)) << char(197)
+         << string(15, char(196)) << char(197)
+         << string(30, char(196)) << char(197)
+         << string(10, char(196)) << char(197)
+         << string(20, char(196)) << char(197)
+         << string(12, char(196)) << char(197)
+         << string(15, char(196)) << char(197)
+         << string(12, char(196)) << char(180);
+
+    for (int i = 0; i < n; i++) {
+        int row = 6 + i;
+        gotoxy(2, row);
+        cout << char(179) << " " << left << setw(4) << i+1 << char(179)
+             << " " << left << setw(14) << arr[i].ISBN << char(179)
+             << " " << left << setw(29) << arr[i].tenSach << char(179)
+             << " " << left << setw(9) << arr[i].soTrang << char(179)
+             << " " << left << setw(19) << arr[i].tacGia << char(179)
+             << " " << left << setw(11) << arr[i].namXuatBan << char(179)
+             << " " << left << setw(14) << arr[i].theLoai << char(179)
+             << " " << left << setw(11) << arr[i].slmuon << char(179);
+    }
+
+    for (int i = n; i < 10; i++) {
+        int row = 6 + i;
+        gotoxy(2, row);
+        cout << char(179) << string(5, ' ') << char(179)
+             << string(15, ' ') << char(179)
+             << string(30, ' ') << char(179)
+             << string(10, ' ') << char(179)
+             << string(20, ' ') << char(179)
+             << string(12, ' ') << char(179)
+             << string(15, ' ') << char(179)
+             << string(12, ' ') << char(179);
+    }
+
+    gotoxy(2, 16);
+    cout << char(192) << string(5, char(196)) << char(193)
+         << string(15, char(196)) << char(193)
+         << string(30, char(196)) << char(193)
+         << string(10, char(196)) << char(193)
+         << string(20, char(196)) << char(193)
+         << string(12, char(196)) << char(193)
+         << string(15, char(196)) << char(193)
+         << string(12, char(196)) << char(217);
+
+    gotoxy(2, 18);
+    SetColor(8);
+    cout << "[ESC]: Thoat";
+    SetColor(7);
+}
+
+void print_Top10(DS_DauSach &ds) {
+    const int k = 10;
+    DauSach heap[k];
+    int heapSize = 0;
+
+    for (int i = 0; i < ds.soluong; i++) {
+        if (heapSize < k) {
+            heap[heapSize] = ds.nodes[i];
+            heapifyUp(heap, heapSize);
+            heapSize++;
+        } else {
+            if (ds.nodes[i].slmuon > heap[0].slmuon) {
+                heap[0] = ds.nodes[i];
+                heapifyDown(heap, heapSize, 0);
+            }
+        }
+    }
+
+    selectionSort(heap, heapSize);
+
+    DrawTable_Top10(heap, heapSize);
+
+    while (true) {
+        int key = _getch();
+        if (key == 27){
+            cout<<right;
+            break;
+        };
+    }
+}

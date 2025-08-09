@@ -127,4 +127,12 @@ void collectQuaHanPtr(TREE_DOCGIA root, TREE_DOCGIA* dgArr, PTRMT* mtArr, int &i
 int count_QuaHan(TREE_DOCGIA root);
 void SelectionSortQuaHan(TREE_DOCGIA* dgArr, PTRMT* mtArr, int n);
 void print_QuaHan(TREE_DOCGIA root, DS_DauSach &ds);
+
+// In danh sach top 10 sach duoc muon nhieu nhat
+void heapifyUp(DauSach heap[], int i);
+void heapifyDown(DauSach heap[], int n, int i);
+void selectionSort(DauSach arr[], int n);
+void DrawTable_Top10(DauSach arr[], int n);
+void print_Top10(DS_DauSach &ds);
+
 #endif

@@ -322,7 +322,7 @@ void menu(TREE_DOCGIA &root, DS_DauSach &dsDauSach)
                 print_QuaHan(root, dsDauSach);
             }
             else if(chon == 6){ // Thong ke 10 sach duoc muon nhieu nhat
-
+                print_Top10(dsDauSach);
             }
             else if (chon == soCN - 1){
                 freeBST(root);
