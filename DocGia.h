@@ -124,6 +124,9 @@ bool Enter_Xoa(TREE_DOCGIA &root, TREE_DOCGIA &p);
 void XoaDocGia(TREE_DOCGIA &root);
 
 // Sua Doc Gia
+void draw_GiaoDienSuaDocGia();
+void XoaKhuVucSuaDocGia();
+bool Enter_SuaDocGia(TREE_DOCGIA &root, TREE_DOCGIA &p);
 void SuaDocGia(TREE_DOCGIA &root);
 void HienThiFormSua(int x, int y, const string &ho, const string &ten, const string &gioitinh, int trangthai, int currentField);
 
