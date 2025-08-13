@@ -66,7 +66,7 @@ int nhapThongTinDauSach(DauSach *ds, const DS_DauSach &dsList)
             gotoxy(30, y_pos[i]);
             cout << labels[i] << ": ";
             gotoxy(x_input, y_pos[i]);
-            cout << setw(30) << left << values[i];
+            cout << setfill(' ') << setw(30) << left << values[i];
         }
 
         // Vẽ các nút điều khiển
@@ -113,6 +113,25 @@ int nhapThongTinDauSach(DauSach *ds, const DS_DauSach &dsList)
                         cout << "Khong duoc bo trong!";
                         SetColor(7);
                         valid = false;
+                    }
+                    else if (i == 0) // Kiểm tra ISBN
+                    {
+                        if (!all_of(values[i].begin(), values[i].end(), ::isdigit))
+                        {
+                            gotoxy(80, y_pos[i]);
+                            SetColor(12);
+                            cout << "ISBN chi duoc chua so!";
+                            SetColor(7);
+                            valid = false;
+                        }
+                        else if (values[i].length() != 5)
+                        {
+                            gotoxy(80, y_pos[i]);
+                            SetColor(12);
+                            cout << "ISBN phai co 5 ky tu!";
+                            SetColor(7);
+                            valid = false;
+                        }
                     }
                     else if ((i == 2 || i == 4) && !all_of(values[i].begin(), values[i].end(), ::isdigit))
                     {
@@ -174,6 +193,9 @@ int nhapThongTinDauSach(DauSach *ds, const DS_DauSach &dsList)
         }
         else if (isprint(ch) && current < MAX_FIELDS)
         {
+            if (values[current].empty() && ch == ' ')
+                continue;
+
             values[current] += ch;
             cout << ch;
         }
@@ -219,6 +241,17 @@ void ThemDauSach(DS_DauSach &ds)
     cout << "Nhap vi tri cho cac cuon sach: ";
     string viTri;
     getline(cin, viTri);
+    while (viTri.empty() || viTri.find_first_not_of(' ') == string::npos)
+    {
+        gotoxy(35, 8);
+        SetColor(12);
+        cout << "Vi tri khong duoc de trong!       ";
+        SetColor(7);
+
+        gotoxy(35, 7);
+        cout << "Nhap vi tri cho cac cuon sach: ";
+        getline(cin, viTri);
+    }
 
     for (int i = 1; i <= soLuong; ++i)
     {
@@ -539,14 +572,14 @@ void InDanhSachDauSachTheoTheLoai(DS_DauSach &ds)
              << string(14, char(196)) << char(191);
 
         // Tiêu đề cột
+        cout << setfill(' ');
         gotoxy(x, y++);
-        cout << char(179) << " STT " << char(179)
+        cout << char(179) << setw(6) << left << " STT " << char(179)
              << setw(15) << left << " ISBN" << char(179)
              << setw(30) << left << " Ten sach" << char(179)
              << setw(20) << left << " Tac gia" << char(179)
              << setw(6) << left << " Nam" << char(179)
              << setw(14) << left << " So luong sach" << char(179);
-
         // Dòng phân cách
         gotoxy(x, y++);
         cout << char(195) << string(6, char(196)) << char(197)
@@ -570,7 +603,8 @@ void InDanhSachDauSachTheoTheLoai(DS_DauSach &ds)
 
             DauSach &d = danhSachCon.nodes[i];
             gotoxy(x, y++);
-            cout << char(179) << " " << setw(4) << left << i + 1 << char(179)
+            cout << setfill(' ') // đặt lại fill là khoảng trắng
+                 << char(179) << " " << setw(5) << left << i + 1 << char(179)
                  << setw(15) << left << d.ISBN << char(179)
                  << setw(30) << left << d.tenSach << char(179)
                  << setw(20) << left << d.tacGia << char(179)
@@ -642,6 +676,8 @@ void TimSachTheoTen(DS_DauSach &ds)
     int x = 5, y = 4;
     int w = 60;
     int chon = 0;
+    int trangHienTai = 0;
+    const int soDongMoiTrang = 10;
 
     while (true)
     {
@@ -652,7 +688,7 @@ void TimSachTheoTen(DS_DauSach &ds)
         SetColor(14);
         gotoxy(x, y);
         cout << "Nhap ten sach: ";
-        cout << setw(w) << left << tuKhoa << " ";
+        cout << setfill(' ') << setw(w) << left << tuKhoa << " ";
 
         // ====== Tìm kiếm ======
         string tuKhoaLower = toLowerStr(tuKhoa);
@@ -668,13 +704,27 @@ void TimSachTheoTen(DS_DauSach &ds)
             }
         }
 
-        chon = min(chon, max(0, soLuongTimThay - 1)); // tránh vượt giới hạn
+        // Số trang
+        int tongTrang = (soLuongTimThay + soDongMoiTrang - 1) / soDongMoiTrang;
+        if (tongTrang == 0)
+            tongTrang = 1;
+        if (trangHienTai >= tongTrang)
+            trangHienTai = tongTrang - 1;
+
+        // Chỉ số bắt đầu của trang hiện tại
+        int batDau = trangHienTai * soDongMoiTrang;
+        int ketThuc = min(batDau + soDongMoiTrang, soLuongTimThay);
+
+        // Giữ con trỏ chọn trong trang
+        chon = min(chon, ketThuc - batDau - 1);
+        if (chon < 0)
+            chon = 0;
 
         // ====== Header bảng kết quả ======
         int yTable = y + 2;
         SetColor(7);
         gotoxy(x, yTable++);
-        cout << char(218) << string(5, char(196)) << char(194)
+        cout << char(218) << string(7, char(196)) << char(194)
              << string(15, char(196)) << char(194)
              << string(30, char(196)) << char(194)
              << string(20, char(196)) << char(194)
@@ -682,15 +732,15 @@ void TimSachTheoTen(DS_DauSach &ds)
              << string(15, char(196)) << char(191);
 
         gotoxy(x, yTable++);
-        cout << char(179) << "STT " << char(179)
-             << setw(14) << left << "ISBN" << char(179)
-             << setw(29) << left << "Ten sach" << char(179)
-             << setw(19) << left << "Tac gia" << char(179)
-             << setw(5) << left << "Nam" << char(179)
-             << setw(14) << left << "The loai" << char(179);
+        cout << setfill(' ') << char(179) << setw(7) << left << "STT" << char(179)
+             << setw(15) << left << "ISBN" << char(179)
+             << setw(30) << left << "Ten sach" << char(179)
+             << setw(20) << left << "Tac gia" << char(179)
+             << setw(6) << left << "Nam" << char(179)
+             << setw(15) << left << "The loai" << char(179);
 
         gotoxy(x, yTable++);
-        cout << char(195) << string(5, char(196)) << char(197)
+        cout << char(195) << string(7, char(196)) << char(197)
              << string(15, char(196)) << char(197)
              << string(30, char(196)) << char(197)
              << string(20, char(196)) << char(197)
@@ -698,49 +748,62 @@ void TimSachTheoTen(DS_DauSach &ds)
              << string(15, char(196)) << char(180);
 
         // ====== In danh sách kết quả ======
-        for (int i = 0; i < soLuongTimThay && i < 15; ++i)
+        for (int i = batDau; i < ketThuc; ++i)
         {
             int index = chiSoTimThay[i];
             DauSach &s = ds.nodes[index];
 
             gotoxy(x, yTable++);
-            if (i == chon)
+            if (i - batDau == chon)
                 SetBGColor(3);
             else
                 SetBGColor(0);
 
-            cout << char(179) << setw(4) << right << i + 1 << " " << char(179)
-                 << setw(14) << left << s.ISBN << char(179)
-                 << setw(29) << left << s.tenSach << char(179)
-                 << setw(19) << left << s.tacGia << char(179)
-                 << setw(5) << left << s.namXuatBan << char(179)
-                 << setw(14) << left << s.theLoai << char(179);
+            cout << setfill(' ')
+                 << char(179) << setw(7) << left << i + 1 << char(179)
+                 << setw(15) << left << s.ISBN << char(179)
+                 << setw(30) << left << s.tenSach << char(179)
+                 << setw(20) << left << s.tacGia << char(179)
+                 << setw(6) << left << s.namXuatBan << char(179)
+                 << setw(15) << left << s.theLoai << char(179);
         }
         SetBGColor(0);
 
         gotoxy(x, yTable + 1);
         SetColor(10);
-        cout << "ESC: Thoat | ENTER: Chi tiet | BACKSPACE: Xoa | ↑↓: Dieu huong";
+        cout << "ESC: Thoat | ENTER: Chi tiet | BACKSPACE: Xoa | UP-DOWN: Dieu huong | LEFT-RIGHT: Trang ("
+             << trangHienTai + 1 << "/" << tongTrang << ")";
 
         // ====== Xử lý phím ======
         c = _getch();
         if (c == -32 || c == 224)
         {
             c = _getch();
-            if (c == 72 && chon > 0)
+            if (c == 72 && chon > 0) // Up
                 chon--;
-            else if (c == 80 && chon < soLuongTimThay - 1)
+            else if (c == 80 && chon < ketThuc - batDau - 1) // Down
                 chon++;
+            else if (c == 75 && trangHienTai > 0) // Left
+            {
+                trangHienTai--;
+                chon = 0;
+            }
+            else if (c == 77 && trangHienTai < tongTrang - 1) // Right
+            {
+                trangHienTai++;
+                chon = 0;
+            }
             continue;
         }
-        else if (c == 27)
+        else if (c == 27) // ESC
             return;
-        else if (c == 8 && !tuKhoa.empty())
+        else if (c == 8 && !tuKhoa.empty()) // Backspace
         {
             tuKhoa.pop_back();
             chon = 0;
+            trangHienTai = 0;
         }
-        else if (c == 13)
+        else if (c == 13) // Enter
         {
             if (soLuongTimThay == 0)
             {
@@ -748,8 +811,7 @@ void TimSachTheoTen(DS_DauSach &ds)
                 continue;
             }
 
-            // ====== In chi tiết ======
-            int index = chiSoTimThay[chon];
+            int index = chiSoTimThay[batDau + chon];
             DauSach &s = ds.nodes[index];
 
             clrscr();
@@ -787,7 +849,7 @@ void TimSachTheoTen(DS_DauSach &ds)
                     cout << "Da cho muon";
                     break;
                 case 2:
-                    cout << "Thanh ly";
+                    cout << "Het Sach";
                     break;
                 default:
                     cout << "Khong ro";
@@ -805,6 +867,7 @@ void TimSachTheoTen(DS_DauSach &ds)
         {
             tuKhoa += c;
             chon = 0;
+            trangHienTai = 0;
         }
     }
 }
