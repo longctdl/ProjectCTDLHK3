@@ -14,6 +14,44 @@ struct TreeNode {
 
 typedef TreeNode* PTR;
 
+struct Node{
+    PTR data;
+    Node* next;
+};
+
+typedef Node* NodeQ;
+
+struct Queue{
+    NodeQ front, rear;
+
+    Queue(){
+        front = rear = nullptr;
+    }
+
+    bool empty() const{
+        return front == nullptr;
+    }
+
+    void push(PTR value){
+        NodeQ newNode = new Node{value, nullptr};
+        if(rear) rear->next = newNode;
+        else front = newNode;
+        rear = newNode;
+    }
+
+    PTR getFront() const {
+        return empty() ? nullptr : front->data;
+    }
+
+    void pop(){
+        if(empty()) return;
+        NodeQ tmp = front;
+        front = front->next;
+        if(!front) rear = nullptr;
+        delete tmp;
+    }
+};
+
 PTR buildBalancedTree(int arr[], int left, int right) {
     if (left > right) return nullptr;
     int mid = (left + right) / 2;
@@ -26,10 +64,10 @@ PTR buildBalancedTree(int arr[], int left, int right) {
 int levelOrder(PTR root, int output[]) {
     if (!root) return 0;
     int index = 0;
-    queue<PTR> q;
+    Queue q;
     q.push(root);
     while (!q.empty()) {
-        PTR node = q.front(); q.pop();
+        PTR node = q.getFront(); q.pop();
         output[index++] = node->val;
         if (node->left) q.push(node->left);
         if (node->right) q.push(node->right);

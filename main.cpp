@@ -263,6 +263,7 @@ void menu(TREE_DOCGIA &root, DS_DauSach &dsDauSach)
         "Muon sach",
         "Tra sach",
         "Cac sach doc gia dang muon",
+        "DS doc gia muon sach qua han",
         "Thong ke top 10 sach",
         "Thoat"};
     int chon = 0;
@@ -300,39 +301,32 @@ void menu(TREE_DOCGIA &root, DS_DauSach &dsDauSach)
         else if (key == ENTER)
         {
             clrscr();
-            if (chon == 0)
-            {
+            if (chon == 0){
                 giaoDienQuanLyDocGia(root);
             }
-            else if (chon == 1)
-            {
+            else if (chon == 1){
                 giaoDienQuanLyDauSach(dsDauSach);
             }
-            else if (chon == 2)
-            { // Muon sach
+            else if (chon == 2){ // Muon sach
+                ShowCur(true);
+                BorrowBook(root, dsDauSach);
             }
-            else if (chon == 3)
-            { // Tra sach
+            else if (chon == 3){ // Tra sach
+                ReturnBook(root, dsDauSach);
             }
-            else if (chon == 4)
-            {
+            else if (chon == 4){
                 ShowCur(true);
                 print_DsDangMuon(root, dsDauSach);
-                getch();
             }
-            else if (chon == 5)
-            {
+            else if (chon == 5){ // Danh sach doc gia muon qua han
+                print_QuaHan(root, dsDauSach);
             }
-            else if (chon == soCN - 1)
-            {
+            else if(chon == 6){ // Thong ke 10 sach duoc muon nhieu nhat
+                print_Top10(dsDauSach);
+            }
+            else if (chon == soCN - 1){
                 freeBST(root);
                 return;
-            }
-            else
-            {
-                gotoxy(35, 8);
-                cout << "Chuc nang nay chua lam!";
-                getch();
             }
             clrscr();
             SetColor(14);
@@ -352,6 +346,7 @@ int main()
 
     TREE_DOCGIA root = nullptr;
     read_File(root, "txt\\DanhSachDocGia.txt");
+    docDanhSachDauSachTuFile("txt\\DanhSachDauSach.txt", ds);
     menu(root, ds);
     freeBST(root);
 }

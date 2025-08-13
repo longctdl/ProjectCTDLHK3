@@ -134,3 +134,13 @@ void ThongBao(const char *s){
     clreol();
     gotoxy(x, y);
 }
+
+void ThongBaoMuon(const char *s){
+    int x = wherex(), y = wherey();
+    gotoxy(79, 35);
+    cout << s;
+    Sleep(2000);
+    gotoxy(79, 35);
+    clreol();
+    gotoxy(x, y);
+}

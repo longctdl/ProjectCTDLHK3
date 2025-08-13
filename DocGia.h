@@ -42,6 +42,45 @@ struct NodeTheDocGia{
 
 typedef NodeTheDocGia* TREE_DOCGIA;
 
+// tao cau truc QUEUE
+struct Node{
+    TREE_DOCGIA data;
+    Node* next;
+};
+
+typedef Node* NodeQ;
+
+struct Queue{
+    NodeQ front, rear;
+
+    Queue(){
+        front = rear = nullptr;
+    }
+
+    bool empty() const{
+        return front == nullptr;
+    }
+
+    void push(TREE_DOCGIA data){
+        NodeQ newNode = new Node{data, nullptr};
+        if(rear) rear->next = newNode;
+        else front = newNode;
+        rear = newNode;
+    }
+
+    TREE_DOCGIA getFront() const{
+        return empty() ? nullptr : front->data;
+    }
+
+    void pop(){
+        if(empty()) return;
+        NodeQ tmp = front;
+        front = front->next;
+        if(!front) rear = nullptr;
+        delete tmp;
+    }
+};
+
 TREE_DOCGIA createNode(TheDocGia docgia);
 void InsertNode(TREE_DOCGIA &root, TheDocGia docgia);
 int getMaTheTuFile(const char* filename);
@@ -49,8 +88,8 @@ void VeKhungDanhSach();
 void VeKhungNhapLieu();
 void XoaKhungNhapLieu();
 bool Enter_DocGia(TheDocGia &docgia);
-void HienThiTrangDocGia(TheDocGia** Array, int page, int totalPages, int totalNode);
-TheDocGia** Insert_Order(TheDocGia** oldArray, int oldSize, TheDocGia* newElement);
+void HienThiTrangDocGia(TheDocGia* Array, int page, int totalPages, int totalNode);
+TheDocGia* Insert_Order(TheDocGia* oldArray, int oldSize, TheDocGia& newElement);
 void ThemDocGia(TREE_DOCGIA &root);
 void freeBST(TREE_DOCGIA &root);
 
@@ -69,10 +108,10 @@ void read_File(TREE_DOCGIA &root, const char* filename);
 //ham ho tro hien thi danh sach va phan trang
 int countNodeDocGia(TREE_DOCGIA root);
 void collectDocGia(TREE_DOCGIA root, TheDocGia dsDocGia[], int& index);
-void InsertTreeToArray(TREE_DOCGIA root, TheDocGia** Array, int& index);
-bool SortDocGiaByName(const TheDocGia* a, const TheDocGia* b);
-void QuickSortDocGia(TheDocGia* A[], int left, int right);
-void HienThiDanhSachDocGia(TheDocGia** Array, int page, int totalPages, int totalNode);
+void InsertTreeToArray(TREE_DOCGIA root, TheDocGia* Array, int& index);
+bool SortDocGiaByName(const TheDocGia& a, const TheDocGia& b);
+void QuickSortDocGia(TheDocGia* A, int left, int right);
+void HienThiDanhSachDocGia(TheDocGia* Array, int page, int totalPages, int totalNode);
 void XuLyInDanhSachDocGia(TREE_DOCGIA &root, bool sortByName);
 
 // Xoa Doc Gia
@@ -80,11 +119,38 @@ TREE_DOCGIA Search(TREE_DOCGIA root, int maThe);
 TREE_DOCGIA findMin(TREE_DOCGIA root);
 bool check_MuonSach(PTRMT ds);
 TREE_DOCGIA Delete_DocGia(TREE_DOCGIA root, int maThe);
+void draw_GiaoDienXoaDocGia();
+bool Enter_Xoa(TREE_DOCGIA &root, TREE_DOCGIA &p);
 void XoaDocGia(TREE_DOCGIA &root);
 
 // Sua Doc Gia
 void SuaDocGia(TREE_DOCGIA &root);
 void HienThiFormSua(int x, int y, const string &ho, const string &ten, const string &gioitinh, int trangthai, int currentField);
+
+
+// Muon sach
+bool check_QuaHan(const Date& ngayMuon);
+bool check_Muon(TheDocGia& docgia);
+string Search_ISBN(DS_DauSach& ds, int maSach);
+bool check_trungDauSach(PTRMT First, DS_DauSach& ds, int maSach);
+void InsertMuonTra(TheDocGia& docgia, int maSach, Date ngayMuon, bool isMuon);
+bool updateSach(DS_DauSach& ds, int maSach, int newTrangThai);
+void draw_GiaoDienMuonSach();
+void HienThi_List_Sach(Sach* Array, DS_DauSach& ds, int page, int totalPages, int totalNode);
+void draw_EnterMuon();
+void Delete_KhungEnter_Muon();
+bool Enter_Muon(TREE_DOCGIA root, DS_DauSach& ds, TREE_DOCGIA &pDocGia, int &maSachOut, int &IndexDauSach);
+int count_List_Sach(DS_DauSach& ds);
+void InsertSachToArray(DS_DauSach& ds, Sach* Array, int &index);
+void BorrowBook(TREE_DOCGIA root, DS_DauSach& ds);
+
+//Tra Sach
+void draw_GiaoDienTraSach();
+void DrawTable_BorrowingBook(MuonTra* Array, DS_DauSach &ds, int totalNode, int startX, int startY);
+bool check_SachTra(PTRMT First, int maSach);
+void XoaKhuVucTraSach();
+bool Enter_Tra(TREE_DOCGIA root, DS_DauSach& ds, TREE_DOCGIA &p, int &maSachOut);
+void ReturnBook(TREE_DOCGIA root, DS_DauSach& ds);
 
 // In danh sach muon cua doc gia
 string Search_NameBook(DS_DauSach &ds, int maSach);
@@ -92,6 +158,22 @@ int countNodeMuon(PTRMT First);
 void collectMuon(PTRMT First, MuonTra dsMuon[], int &index);
 void draw_GiaoDienXemDanhSachMuon();
 void XoaKhuVucMuonTra(int startX, int startY);
-void HienThiDanhSachMuon(MuonTra** Array, DS_DauSach &ds, int page, int totalPages, int totalNode, int startX, int startY);
+void HienThiDanhSachMuon(MuonTra* Array, DS_DauSach &ds, int page, int totalPages, int totalNode, int startX, int startY);
 void print_DsDangMuon(TREE_DOCGIA root, DS_DauSach &ds);
+
+// In danh sach doc gia muon sach qua han theo thu tu thoi gian giam dan
+int Dem_NgayQuaHan(const Date& ngayMuon);
+void DrawTable_QuaHan(TREE_DOCGIA* dgArr, PTRMT* mtArr, DS_DauSach &ds, int page, int totalPages, int totalNode, int startX, int startY);
+void collectQuaHanPtr(TREE_DOCGIA root, TREE_DOCGIA* dgArr, PTRMT* mtArr, int &index);
+int count_QuaHan(TREE_DOCGIA root);
+void SelectionSortQuaHan(TREE_DOCGIA* dgArr, PTRMT* mtArr, int n);
+void print_QuaHan(TREE_DOCGIA root, DS_DauSach &ds);
+
+// In danh sach top 10 sach duoc muon nhieu nhat
+void heapifyUp(DauSach heap[], int i);
+void heapifyDown(DauSach heap[], int n, int i);
+void selectionSort(DauSach arr[], int n);
+void DrawTable_Top10(DauSach arr[], int n);
+void print_Top10(DS_DauSach &ds);
+
 #endif

@@ -26,6 +26,8 @@ void CreateBoxDouble(int x, int y, string text, int length);
 
 void ThongBao(const char *s);
 
+void ThongBaoMuon(const char *s);
+
 int wherex(void);
 
 int wherey(void);
