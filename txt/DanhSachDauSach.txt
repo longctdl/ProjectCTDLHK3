@@ -1,12 +1,12 @@
 12323
-CTDL
+Cau Truc Du Lieu
 PTIT
 250
 2022
 Cong Nghe
-0
-8|Ke 2|0
-7|Ke 1|0
+2
+8|Ke 2|1
+7|Ke 1|1
 #
 1233
 Dragon ball
@@ -14,10 +14,10 @@ Not
 300
 2002
 Truyen Tranh
-0
+2
 3|Ke 3|0
-2|Ke 2|0
-1|Ke 1|0
+2|Ke 2|1
+1|Ke 1|1
 #
 22334
 Khoa Hoc Va Thien Nhien
@@ -25,8 +25,8 @@ PTIT
 250
 2025
 Khoa Hoc
-0
-19|Ke KH|0
+1
+19|Ke KH|1
 20|Ke KH|0
 21|Ke KH|0
 22|Ke KH|0
@@ -41,14 +41,14 @@ Cong Nghe
 4|Ke 4|1
 #
 12223
-Lap Trinh web
+Lap Trinh Web
 PTIT
 200
 2025
 Cong nghe
-0
+1
 6|Ke 6|0
-5|Ke 5|0
+5|Ke 5|1
 #
 11221
 Naruto
@@ -56,31 +56,41 @@ Kishimoto
 100
 1999
 Truyen Tranh
-0
+1
 13|Ke 13|0
-12|Ke 12|0
+12|Ke 12|1
 #
 12335
-OOP
+Lap trinh huong doi tuong
 Ptit
 230
 2022
 Cong Nghe
-0
-9|Ke 9|0
-10|Ke 10|0
+2
+9|Ke 9|1
+10|Ke 10|1
 11|Ke 11|0
 #
 12222
-Su
+Lich su
 PTIT
 120
 2025
 Sach Giao Khoa
+3
+25|Ke SGK|1
+24|Ke SGK|1
+23|Ke SGK|1
+#
+56283
+nhap mon cong nghe
+nguyen mai kha
+144
+2014
+hoc thuat
 0
-25|Ke SGK|0
-24|Ke SGK|0
-23|Ke SGK|0
+31|Ke sach hoc thuat|0
+30|Ke sach hoc thuat|0
 #
 12233
 Toan
@@ -94,34 +104,24 @@ Sach Giao Khoa
 14|Ke C|0
 #
 21342
-Tin
+Tin Hoc Co So
 PTIT
 100
 2020
 Sach Giao Khoa
-0
+1
 18|Ke SGK|0
-17|Ke SGK|0
-#
-21345
-Anh Van
-PTIT
-100
-2020
-Sach Giao Khoa
-0
-18|Ke SGK|0
-17|Ke SGK|0
+17|Ke SGK|1
 #
 21340
-SGK
+Vat ly va thi nghiem
 Ptit
 120
 2025
 Sach Giao Khoa
-0
-29|                ke sgk|0
-28|                ke sgk|0
-27|                ke sgk|0
-26|                ke sgk|0
+1
+29|ke sgk|0
+28|ke sgk|0
+27|ke sgk|1
+26|ke sgk|0
 #

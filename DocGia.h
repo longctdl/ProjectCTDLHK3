@@ -136,6 +136,7 @@ bool check_QuaHan(const Date& ngayMuon);
 bool check_Muon(TheDocGia& docgia);
 string Search_ISBN(DS_DauSach& ds, int maSach);
 bool check_trungDauSach(PTRMT First, DS_DauSach& ds, int maSach);
+void Insert_First(PTRMT &First, MuonTra &data);
 void InsertMuonTra(TheDocGia& docgia, int maSach, Date ngayMuon, bool isMuon);
 bool updateSach(DS_DauSach& ds, int maSach, int newTrangThai);
 void draw_GiaoDienMuonSach();

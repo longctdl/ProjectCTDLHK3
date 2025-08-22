@@ -1045,6 +1045,12 @@ bool check_trungDauSach(PTRMT First, DS_DauSach& ds, int maSach){
     return false;
 }
 
+void Insert_First(PTRMT &First, MuonTra &data){
+    PTRMT newNode = new NodeMT{data, nullptr};
+    newNode->next = First;
+    First = newNode;
+}
+
 void InsertMuonTra(TheDocGia& docgia, int maSach, Date ngay, bool isMuon){
     if(isMuon){
         MuonTra p;
@@ -1053,9 +1059,7 @@ void InsertMuonTra(TheDocGia& docgia, int maSach, Date ngay, bool isMuon){
         p.trangThai = 0;
         p.ngayTra = {-1, -1, -1};
     
-        PTRMT newNode = new NodeMT{p, nullptr};
-        newNode->next = docgia.dsMuonTra;
-        docgia.dsMuonTra = newNode;
+        Insert_First(docgia.dsMuonTra, p);
     } else {
         PTRMT p = docgia.dsMuonTra;
         while(p!=nullptr){
@@ -1850,10 +1854,6 @@ void print_DsDangMuon(TREE_DOCGIA root, DS_DauSach &ds) {
 
     while(true){
         totalNode_DG = countNodeDocGia(root);
-        if(tempDocGiaArray != nullptr){
-            delete[] tempDocGiaArray;
-            tempDocGiaArray = nullptr;
-        }
         if(totalNode_DG == 0){
             ThongBao("Danh sach doc gia rong!");
             ShowCur(false);
@@ -1951,11 +1951,6 @@ void print_DsDangMuon(TREE_DOCGIA root, DS_DauSach &ds) {
         gotoxy(84, 9); cout << "Trang Thai The: " << (p->data.trangThai == 0 ? "Bi Khoa" : "Hoat dong");
         
         totalMuonNode = countNodeMuon(p->data.dsMuonTra);
-
-        if (tmpMuonArray != nullptr) {
-            delete[] tmpMuonArray;
-            tmpMuonArray = nullptr;
-        }
         
         if(totalMuonNode == 0){
             ThongBao("Doc gia nay khong co sach nao dang muon.");

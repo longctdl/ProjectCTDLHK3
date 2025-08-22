@@ -211,7 +211,7 @@ void giaoDienQuanLyDauSach(DS_DauSach &dsDauSach)
             clrscr();
             if (chon == 0)
             {
-                docDanhSachDauSachTuFile("txt\\DanhSachDauSach.txt", dsDauSach);
+                // docDanhSachDauSachTuFile("txt\\DanhSachDauSach.txt", dsDauSach);
                 ThemDauSach(dsDauSach);
                 ghiDanhSachDauSachRaFile(dsDauSach, "txt\\DanhSachDauSach.txt");
                 gotoxy(35, 10);

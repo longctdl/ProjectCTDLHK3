@@ -217,8 +217,10 @@ void ThemDauSach(DS_DauSach &ds)
     DauSach newDS;
     int result = nhapThongTinDauSach(&newDS, ds); // Truyền ds để kiểm tra trùng ISBN
 
-    if (result != 1)
+    if (result != 1){
         return; // Không lưu hoặc quay lại
+        cout<<right;
+    }
 
     clrscr();
     gotoxy(35, 5);
