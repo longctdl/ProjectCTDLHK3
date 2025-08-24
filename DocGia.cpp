@@ -557,7 +557,7 @@ TREE_DOCGIA findMin(TREE_DOCGIA root){
 
 bool check_MuonSach(PTRMT ds){
     while(ds!= nullptr){
-        if(ds->data.trangThai == 0 || ds->data.trangThai == 2) return true;
+        if(ds->data.trangThai == 0) return true;
         ds = ds->next;
     }
     return false;
@@ -1593,6 +1593,7 @@ bool Enter_Tra(TREE_DOCGIA root, DS_DauSach& ds, TREE_DOCGIA &p, int &maSachOut)
         maSach = inputNumber(INPUT_Z, 19, 10);
         if(maSach == INPUT_CANCELLED){
             ShowCur(false);
+            delete[] Array;
             XoaKhuVucTraSach();
             return false;
         }
@@ -2174,6 +2175,7 @@ void print_QuaHan(TREE_DOCGIA root, DS_DauSach &ds){
     cout<<right;
 }
 
+// them vao va tim phan tu min heap
 void heapifyUp(DauSach heap[], int i) {
     int parent = (i - 1) / 2;
     while (i > 0 && heap[i].slmuon < heap[parent].slmuon) {

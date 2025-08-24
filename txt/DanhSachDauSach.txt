@@ -5,7 +5,7 @@ Tran Thi Bich
 420
 2019
 Giao Trinh
-1
+2
 14|Ke A2|0
 15|Ke A2|1
 16|Ke A2|0
@@ -28,8 +28,8 @@ Do Thi Lan
 390
 2017
 Giao Trinh
-0
-32|Ke A6|0
+1
+32|Ke A6|1
 33|Ke A6|0
 34|Ke A6|0
 35|Ke A6|0
@@ -65,11 +65,11 @@ Nguyen Van Binh
 400
 2021
 Tham Khao
-0
+1
 49|Ke B4|0
 50|Ke B4|0
 51|Ke B4|0
-52|Ke B4|0
+52|Ke B4|1
 #
 10015
 Ky Thuat Lap Trinh Oop
@@ -204,7 +204,7 @@ Tham Khao
 36|Ke B1|0
 37|Ke B1|0
 38|Ke B1|0
-39|Ke B1|1
+39|Ke B1|0
 40|Ke B1|0
 41|Ke B1|0
 #
