@@ -1,5 +1,6 @@
 #include "Sach.h"
 #include "UIConsole.h"
+#include "hamXuLy.h"
 #include <iostream>
 #include <conio.h>
 #include <algorithm>
@@ -16,8 +17,7 @@ using namespace std;
 int maSoSach = 0;
 DS_DauSach danhSachCon;
 
-string toLowerStr(const string &s)
-{
+string toLowerStr(const string &s){
     string result = s;
     for (int i = 0; i < result.length(); i++)
     {
@@ -26,274 +26,253 @@ string toLowerStr(const string &s)
     return result;
 }
 
-void capNhatMaSoSachTuDanhSach(DS_DauSach &ds)
-{
-    maSoSach = 0;
+bool check_trung_ISBN(string isbn, DS_DauSach &ds){
+    for(int i = 0; i<ds.soluong; i++){
+        if(ds.nodes[i].ISBN == isbn) return true;
+    }
+    return false;
+}
 
-    for (int i = 0; i < ds.soluong; ++i)
-    {
-        NodeSach *p = ds.nodes[i].dms;
-        while (p != nullptr)
-        {
-            if (p->data.maSach > maSoSach)
-                maSoSach = p->data.maSach;
-
+void insertLast_Sach(PTRDMS &First, Sach data){
+    PTRDMS node = new NodeSach{data, nullptr};
+    if(First == nullptr) First = node;
+    else{
+        PTRDMS p = First;
+        while(p->next != nullptr){
             p = p->next;
         }
+        p->next = node;
     }
+
 }
 
-int nhapThongTinDauSach(DauSach *ds, const DS_DauSach &dsList)
-{
-    ShowCur(true);
-    clrscr();
-    SetColor(14);
-    CreateBoxDouble(40, 2, "   THEM DAU SACH MOI   ", 35);
-    SetColor(7);
-
-    const int MAX_FIELDS = 6;
-    string labels[MAX_FIELDS] = {"ISBN", "Ten sach", "So trang", "Tac gia", "Nam xuat ban", "The loai"};
-    string values[MAX_FIELDS] = {"", "", "", "", "", ""};
-    int y_pos[MAX_FIELDS] = {6, 8, 10, 12, 14, 16};
-
-    int current = 0, x_input = 45, btn_y = 18;
-
-    while (true)
-    {
-        // Vẽ các nhãn và nội dung đã nhập
-        for (int i = 0; i < MAX_FIELDS; i++)
-        {
-            gotoxy(30, y_pos[i]);
-            cout << labels[i] << ": ";
-            gotoxy(x_input, y_pos[i]);
-            cout << setfill(' ') << setw(30) << left << values[i];
-        }
-
-        // Vẽ các nút điều khiển
-        string buttons[2] = {"[ LUU ]", "[ QUAY LAI ]"};
-        for (int i = 0; i < 2; i++)
-        {
-            gotoxy(45 + i * 12, btn_y);
-            if (current == MAX_FIELDS + i)
-                SetColor(i == 0 ? 11 : 12);
-            cout << buttons[i];
-            SetColor(7);
-        }
-
-        gotoxy(current < MAX_FIELDS ? x_input + values[current].length() : 0, current < MAX_FIELDS ? y_pos[current] : btn_y);
-        ShowCur(current < MAX_FIELDS);
-
-        char ch = _getch();
-
-        if (ch == -32)
-        {
-            ch = _getch();
-            current = (ch == 72)   ? (current - 1 + MAX_FIELDS + 2) % (MAX_FIELDS + 2)
-                      : (ch == 80) ? (current + 1) % (MAX_FIELDS + 2)
-                                   : current;
-        }
-        else if (ch == 13) // Enter
-        {
-            if (current == MAX_FIELDS) // LUU
-            {
-                bool valid = true;
-
-                for (int i = 0; i < MAX_FIELDS; ++i)
-                {
-                    gotoxy(80, y_pos[i]);
-                    cout << "                         ";
-                }
-
-                for (int i = 0; i < MAX_FIELDS; ++i)
-                {
-                    if (values[i].empty())
-                    {
-                        gotoxy(80, y_pos[i]);
-                        SetColor(12);
-                        cout << "Khong duoc bo trong!";
-                        SetColor(7);
-                        valid = false;
-                    }
-                    else if (i == 0) // Kiểm tra ISBN
-                    {
-                        if (!all_of(values[i].begin(), values[i].end(), ::isdigit))
-                        {
-                            gotoxy(80, y_pos[i]);
-                            SetColor(12);
-                            cout << "ISBN chi duoc chua so!";
-                            SetColor(7);
-                            valid = false;
-                        }
-                        else if (values[i].length() != 5)
-                        {
-                            gotoxy(80, y_pos[i]);
-                            SetColor(12);
-                            cout << "ISBN phai co 5 ky tu!";
-                            SetColor(7);
-                            valid = false;
-                        }
-                    }
-                    else if ((i == 2 || i == 4) && !all_of(values[i].begin(), values[i].end(), ::isdigit))
-                    {
-                        gotoxy(80, y_pos[i]);
-                        SetColor(12);
-                        cout << "Chi nhap so!";
-                        SetColor(7);
-                        valid = false;
-                    }
-                }
-
-                // Kiểm tra ISBN trùng
-                for (int i = 0; i < dsList.soluong; i++)
-                {
-                    if (dsList.nodes[i].ISBN == values[0])
-                    {
-                        gotoxy(80, y_pos[0]);
-                        SetColor(12);
-                        cout << "ISBN da ton tai!";
-                        SetColor(7);
-                        valid = false;
-                        break;
-                    }
-                }
-
-                if (!valid)
-                    continue;
-
-                // Lưu dữ liệu
-                ds->ISBN = values[0];
-                ds->tenSach = values[1];
-                ds->soTrang = stoi(values[2]);
-                ds->tacGia = values[3];
-                ds->namXuatBan = stoi(values[4]);
-                ds->theLoai = values[5];
-                ds->slmuon = 0;
-                ds->dms = nullptr;
-
-                gotoxy(40, btn_y + 2);
-                SetColor(10);
-                cout << "Da luu dau sach thanh cong!";
-                SetColor(7);
-                getch();
-                return 1;
-            }
-            else if (current == MAX_FIELDS + 1) // QUAY LAI
-            {
-                return -1;
-            }
-        }
-        else if (ch == 8 && current < MAX_FIELDS) // Backspace
-        {
-            if (!values[current].empty())
-            {
-                values[current].pop_back();
-                gotoxy(x_input + values[current].length(), y_pos[current]);
-                cout << " \b";
-            }
-        }
-        else if (isprint(ch) && current < MAX_FIELDS)
-        {
-            if (values[current].empty() && ch == ' ')
-                continue;
-
-            values[current] += ch;
-            cout << ch;
-        }
-    }
-}
-
-void ThemDauSach(DS_DauSach &ds)
-{
-    if (ds.soluong >= MAX_DAUSACH)
-    {
-        gotoxy(35, 20);
-        SetColor(12);
-        cout << "Danh sach da day. Khong the them!";
-        SetColor(7);
-        getch();
+void insertOrder_Sach(DS_DauSach &ds, DauSach newSach){
+    if(ds.soluong >= MAX_DAUSACH){
+        ThongBao("Danh sach da day khong the them sach!");
         return;
     }
 
-    DauSach newDS;
-    int result = nhapThongTinDauSach(&newDS, ds); // Truyền ds để kiểm tra trùng ISBN
-
-    if (result != 1){
-        return; // Không lưu hoặc quay lại
-        cout<<right;
-    }
-
-    clrscr();
-    gotoxy(35, 5);
-    cout << "Nhap so luong cuon sach muon them: ";
-    int soLuong;
-    while (!(cin >> soLuong) || soLuong <= 0)
-    {
-        cin.clear();
-        cin.ignore(100, '\n');
-        gotoxy(35, 6);
-        SetColor(12);
-        cout << "Vui long nhap so nguyen duong!      ";
-        gotoxy(35, 5);
-        SetColor(7);
-        cout << "Nhap so luong cuon sach muon them: ";
-    }
-    cin.ignore();
-
-    gotoxy(35, 7);
-    cout << "Nhap vi tri cho cac cuon sach: ";
-    string viTri;
-    getline(cin, viTri);
-    while (viTri.empty() || viTri.find_first_not_of(' ') == string::npos)
-    {
-        gotoxy(35, 8);
-        SetColor(12);
-        cout << "Vi tri khong duoc de trong!       ";
-        SetColor(7);
-
-        gotoxy(35, 7);
-        cout << "Nhap vi tri cho cac cuon sach: ";
-        getline(cin, viTri);
-    }
-
-    for (int i = 1; i <= soLuong; ++i)
-    {
-        NodeSach *node = new NodeSach;
-        node->data.maSach = ++maSoSach;
-        node->data.trangThai = 0;
-        node->data.viTri = viTri;
-        node->next = newDS.dms;
-        newDS.dms = node;
-    }
-
-    // Chèn vào danh sách đã sắp xếp theo tên sách (tăng dần)
     int pos = ds.soluong;
-    while (pos > 0 && toLowerStr(ds.nodes[pos - 1].tenSach) > toLowerStr(newDS.tenSach))
-    {
+    while(pos > 0 && toLowerStr(ds.nodes[pos -1].tenSach) > toLowerStr(newSach.tenSach)){
         ds.nodes[pos] = ds.nodes[pos - 1];
         pos--;
     }
-    ds.nodes[pos] = newDS;
+    ds.nodes[pos] = newSach;
     ds.soluong++;
-
-    gotoxy(35, 10);
-    SetColor(10);
-    cout << "Da them dau sach va " << soLuong << " ma sach!";
-    SetColor(7);
-    getch();
 }
 
-//=========================Doc Ghi File============================
-void ghiDanhSachDauSachRaFile(DS_DauSach &ds, const string &filename)
-{
+void draw_ThemSach(){
+    clrscr();
+    SetColor(14);
+    CreateBoxDouble(40, 1, "   THEM SACH   ", 15);
+    SetColor(7);
+
+    gotoxy(30, 5); cout<<"ISBN: ";
+    gotoxy(30, 6); cout<<"Ten sach: ";
+    gotoxy(30, 7); cout<<"So trang: ";
+    gotoxy(30, 8); cout<<"Tac gia: ";
+    gotoxy(30, 9); cout<<"Nam xuat ban: ";
+    gotoxy(30, 10); cout<<"The loai: ";
+    gotoxy(30, 11); cout<<"So luong: ";
+    gotoxy(30, 12); cout<<"Vi tri: ";
+
+    gotoxy(20, 17); cout<<"Nhan [ESC] de thoat";
+}
+
+bool Enter_Sach(DS_DauSach &ds){
+    ShowCur(true);
+    draw_ThemSach();
+    
+    const int INPUT_ISBN = 30 + string("ISBN: ").length();
+    const int INPUT_BOOK = 30 + string("Ten sach: ").length();
+    const int INPUT_SL_TRANG = 30 + string("So trang: ").length();
+    const int INPUT_TACGIA = 30 + string("Tac gia: ").length();
+    const int INPUT_NAM = 30 + string("Nam xuat ban: ").length();
+    const int INPUT_THELOAI = 30 + string("The loai: ").length();
+    const int INPUT_SOLUONG = 30 + string("So luong: ").length();
+    const int INPUT_VITRI = 30 + string("Vi tri: ").length();
+    string ISBN, tenSach, soTrang, tacGia, namXuatBan, theLoai, soLuong, viTri;
+
+    while(true){
+        gotoxy(INPUT_ISBN, 5); cout<<string(10, ' ');
+        ISBN = inputNumber(INPUT_ISBN, 5, 5);
+        if(ISBN == INPUT_CANCELLED){
+            ShowCur(false);
+            cout<<right;
+            return false;
+        }
+        if(ISBN.empty()){
+            ThongBao("Vui long nhap ma ISBN!");
+            continue;
+        }
+        if(ISBN.length() != 5){
+            ThongBao("Ma ISBN phai la 5 chu so!");
+            continue;
+        }
+        if(check_trung_ISBN(ISBN, ds)){
+            ThongBao("Ma ISBN nay da duoc su dung!");
+            continue;
+        }
+        break;
+    }
+
+    while(true){
+        gotoxy(INPUT_BOOK, 6); cout<<string(100, ' ');
+        tenSach = inputName(INPUT_BOOK, 6, 100, true);
+        if(tenSach == INPUT_CANCELLED){
+            ShowCur(false);
+            cout<<right;
+            return false;
+        }
+        if(tenSach.empty()){
+            ThongBao("Vui long nhap ten sach!");
+            continue;
+        }
+        break;
+    }
+
+    while(true){
+        gotoxy(INPUT_SL_TRANG, 7); cout<<string(10, ' ');
+        soTrang = inputNumber(INPUT_SL_TRANG, 7, 6);
+        if(soTrang == INPUT_CANCELLED){
+            ShowCur(false);
+            cout<<right;
+            return false;
+        }
+        if(soTrang.empty() || stoi(soTrang) <= 0){
+            ThongBao("So trang phai la so nguyen duong!");
+            continue;
+        }
+        if(stoi(soTrang) < 10 || stoi(soTrang) > 2000){
+            ThongBao("So trang khong hop le (10–2000)!");
+            continue;
+        }
+        break;
+    }
+
+    while(true){
+        gotoxy(INPUT_TACGIA, 8); cout<<string(50, ' ');
+        tacGia = inputName(INPUT_TACGIA, 8, 50, true);
+        if(tacGia == INPUT_CANCELLED){
+            ShowCur(false);
+            cout<<right;
+            return false;
+        }
+        if(tacGia.empty()){
+            ThongBao("Vui long nhap ten tac gia!");
+            continue;
+        }
+        break;
+    }
+
+    while(true){
+        gotoxy(INPUT_NAM, 9); cout<<string(10, ' ');
+        namXuatBan = inputNumber(INPUT_NAM, 9, 4);
+        if(namXuatBan == INPUT_CANCELLED){
+            ShowCur(false);
+            cout<<right;
+            return false;
+        }
+        if(namXuatBan.empty()){
+            ThongBao("Vui long nhap nam xuat ban!");
+            continue;
+        }
+        int nam = stoi(namXuatBan);
+        int currentYear = 2025;
+        if(nam < 1000 || nam > currentYear){
+            ThongBao("Nam xuat ban khong hop le!");
+            continue;
+        }
+        break;
+    }
+
+    while(true){
+        gotoxy(INPUT_THELOAI, 10); cout<<string(50, ' ');
+        theLoai = inputName(INPUT_THELOAI, 10, 50, true);
+        if(theLoai == INPUT_CANCELLED){
+            ShowCur(false);
+            cout<<right;
+            return false;
+        }
+        if(theLoai.empty()){
+            ThongBao("Vui long nhap the loai!");
+            continue;
+        }
+        break;
+    }
+
+    while(true){
+        gotoxy(INPUT_SOLUONG, 11); cout<<string(6, ' ');
+        soLuong = inputNumber(INPUT_SOLUONG, 11, 6);
+        if(soLuong == INPUT_CANCELLED){
+            ShowCur(false);
+            cout<<right;
+            return false;
+        }
+        if(soLuong.empty() || stoi(soLuong) <= 0){
+            ThongBao("So luong phai la so nguyen duong va khong duoc bo trong!");
+            continue;
+        }
+        break;
+    }
+
+    while(true){
+        gotoxy(INPUT_VITRI, 12); cout<<string(50, ' ');
+        viTri = inputViTri(INPUT_VITRI, 12, 50);
+        if(viTri == INPUT_CANCELLED){
+            ShowCur(false);
+            cout<<right;
+            return false;
+        }
+        if(viTri.empty()){
+            ThongBao("Vui long nhap vi tri cua sach!");
+            continue;
+        }
+        break;
+    }
+
+    gotoxy(30, 13); cout<<"Ban co chac muon them sach nay khong? (y/n): ";
+    char confirmChar = GetYesNoInput(30 + string("Ban co chan muon them sach nay khong? (y/n): ").length(), 13);
+    if(confirmChar == 'y'){
+        DauSach newSach;
+        newSach.ISBN = ISBN;
+        newSach.tenSach = chuanHoaTen(tenSach);
+        newSach.soTrang = stoi(soTrang);
+        newSach.tacGia = chuanHoaTen(tacGia);
+        newSach.namXuatBan = stoi(namXuatBan);
+        newSach.theLoai = chuanHoaTen(theLoai);
+        newSach.slmuon = 0;
+
+        Sach newNode;
+        for(int i =0; i < stoi(soLuong); i++){
+            newNode.maSach = ++ds.maxMaSach;
+            newNode.trangThai = 0;
+            newNode.viTri = chuanHoaTen(viTri);
+
+            insertLast_Sach(newSach.dms, newNode);
+        }
+        insertOrder_Sach(ds, newSach);
+        ghiDanhSachDauSachRaFile(ds, "txt\\DanhSachDauSach.txt");
+        ThongBao("Them sach thanh cong!");
+        ShowCur(false);
+        return true;
+    } else {
+        ShowCur(false);
+        ThongBao("DA HUY THAO TAC THEM SACH!");
+        cout<<right;
+        return false;
+    }
+}
+
+void ghiDanhSachDauSachRaFile(DS_DauSach &ds, const string &filename){
     ofstream outFile(filename, ios::trunc);
-    if (!outFile)
-    {
+    if (!outFile){
         cerr << "Khong the mo file " << filename << " de ghi!" << endl;
         return;
     }
 
-    for (int i = 0; i < ds.soluong; ++i)
-    {
+    outFile << ds.maxMaSach << '\n';
+    for (int i = 0; i < ds.soluong; ++i){
         DauSach &d = ds.nodes[i];
 
         outFile << d.ISBN << '\n';
@@ -304,9 +283,8 @@ void ghiDanhSachDauSachRaFile(DS_DauSach &ds, const string &filename)
         outFile << d.theLoai << '\n';
         outFile << d.slmuon << '\n';
 
-        NodeSach *p = d.dms;
-        while (p != nullptr)
-        {
+        PTRDMS p = d.dms;
+        while (p != nullptr){
             outFile << p->data.maSach << "|" << p->data.viTri << "|" << p->data.trangThai << '\n';
             p = p->next;
         }
@@ -317,66 +295,53 @@ void ghiDanhSachDauSachRaFile(DS_DauSach &ds, const string &filename)
     outFile.close();
 }
 
-void docDanhSachDauSachTuFile(const string &filename, DS_DauSach &ds)
-{
+void read_DauSach(DS_DauSach &ds, const string &filename){
     ifstream file(filename);
-    if (!file.is_open())
-    {
+    if (!file.is_open()){
         cerr << "Khong the mo file: " << filename << endl;
         return;
     }
 
-    ds.soluong = 0;
-    string line;
-    int maxMa = 0;
+    string line, token;
+    Sach tmp;
 
-    while (getline(file, line))
-    {
-        if (line.empty())
-            continue;
+    if(!getline(file, line)) return;
+    ds.maxMaSach = stoi(line);
+
+    while(getline(file, line)){
+        if(line.empty()) continue;
 
         DauSach d;
         d.ISBN = line;
         getline(file, d.tenSach);
         getline(file, d.tacGia);
 
-        getline(file, line);
-        d.soTrang = stoi(line);
-        getline(file, line);
-        d.namXuatBan = stoi(line);
+        getline(file, line); d.soTrang = stoi(line);
+        getline(file, line); d.namXuatBan = stoi(line);
         getline(file, d.theLoai);
-        getline(file, line);
-        d.slmuon = stoi(line);
+        getline(file, line); d.slmuon = stoi(line);
 
-        d.dms = nullptr;
-
-        // Đọc từng mã sách cho đến khi gặp dấu "#"
-        while (getline(file, line))
-        {
-            if (line == "#")
-                break;
-
+        while (getline(file, line) && line != "#") {
             stringstream ss(line);
-            string token;
-            NodeSach *node = new NodeSach;
-
-            getline(ss, token, '|');
-            node->data.maSach = stoi(token);
-            maxMa = max(maxMa, node->data.maSach);
-
-            getline(ss, node->data.viTri, '|');
-            getline(ss, token, '|');
-            node->data.trangThai = stoi(token);
-
-            node->next = d.dms;
-            d.dms = node;
+            getline(ss, token, '|'); tmp.maSach = stoi(token);
+            getline(ss, tmp.viTri, '|');
+            getline(ss, token, '|'); tmp.trangThai = stoi(token);
+            insertLast_Sach(d.dms, tmp);
         }
 
-        ds.nodes[ds.soluong++] = d;
+        ds.nodes[ds.soluong++] = d; 
     }
+}
 
-    maSoSach = maxMa;
-    file.close();
+void ThemSach(DS_DauSach &ds){
+    if(ds.soluong >= MAX_DAUSACH){
+        ThongBao("Danh sach da day khong the them!");
+        cout<<right;
+        return;
+    }
+    while(true){
+        if(!Enter_Sach(ds)) break;
+    }
 }
 
 //============================In Danh Sach=============================
@@ -488,6 +453,7 @@ void InDanhSachDauSachTheoTheLoai(DS_DauSach &ds)
         clrscr();
         SetColor(11);
         gotoxy(10, 2);
+        ShowCur(true);
         cout << "Chon the loai muon in:";
         SetColor(7);
 
@@ -623,10 +589,8 @@ void InDanhSachDauSachTheoTheLoai(DS_DauSach &ds)
              << string(6, char(196)) << char(193)
              << string(14, char(196)) << char(217);
 
-        gotoxy(x, y + 1);
-        ThongBao("Nhan ESC de quay lai danh sach the loai...");
-        while (getch() != 27)
-            ;
+        gotoxy(x, y + 1); cout << "Nhan ESC de quay lai danh sach the loai...";
+        while (getch() != 27);
     }
 }
 

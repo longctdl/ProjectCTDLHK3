@@ -1,127 +1,221 @@
-12323
+76
+10002
 Cau Truc Du Lieu
-PTIT
-250
-2022
-Cong Nghe
-2
-8|Ke 2|1
-7|Ke 1|1
-#
-1233
-Dragon ball
-Not
-300
-2002
-Truyen Tranh
-2
-3|Ke 3|0
-2|Ke 2|1
-1|Ke 1|1
-#
-22334
-Khoa Hoc Va Thien Nhien
-PTIT
-250
-2025
-Khoa Hoc
+Tran Thi Bich
+420
+2019
+Giao Trinh
 1
-19|Ke KH|1
-20|Ke KH|0
-21|Ke KH|0
-22|Ke KH|0
+14|Ke A2|0
+15|Ke A2|1
+16|Ke A2|0
+17|Ke A2|0
 #
-12333
+10004
+Co So Du Lieu
+Le Thi Hoa
+410
+2018
+Giao Trinh
+1
+24|Ke A4|1
+25|Ke A4|0
+26|Ke A4|0
+#
+10006
+He Dieu Hanh
+Do Thi Lan
+390
+2017
+Giao Trinh
+0
+32|Ke A6|0
+33|Ke A6|0
+34|Ke A6|0
+35|Ke A6|0
+#
+10014
+Khai Pha Du Lieu
+Tran Huu Long
+201
+2021
+Tham Khao
+0
+68|Ke C3|0
+69|Ke C3|0
+70|Ke C3|0
+71|Ke C3|0
+#
+10013
+Ky Nang Lap Trinh Web
+Dang Thi Thu
+420
+2017
+Giao Trinh
+0
+63|Ke C1|0
+64|Ke C1|0
+65|Ke C1|0
+66|Ke C1|0
+67|Ke C1|0
+#
+10010
+Ky Thuat Lap Trinh
+Nguyen Van Binh
+400
+2021
+Tham Khao
+0
+49|Ke B4|0
+50|Ke B4|0
+51|Ke B4|0
+52|Ke B4|0
+#
+10015
+Ky Thuat Lap Trinh Oop
+Nguyn Thi Hang
+390
+2019
+Giao Trinh
+0
+72|Ke C4|0
+73|Ke C4|0
+74|Ke C4|0
+75|Ke C4|0
+76|Ke C4|0
+#
+10001
 Lap Trinh C
-Ptit
-250
+Nguyen Van Anh
+520
 2020
-Cong Nghe
+Giao Trinh
 1
-4|Ke 4|1
+9|Ke A1|1
+10|Ke A1|0
+11|Ke A1|0
+12|Ke A1|0
+13|Ke A1|0
 #
-12223
-Lap Trinh Web
-PTIT
-200
-2025
-Cong nghe
+10005
+Mang May Tinh
+Ngo Van Minh
+460
+2020
+Giao Trinh
 1
-6|Ke 6|0
-5|Ke 5|1
+27|Ke A5|1
+28|Ke A5|0
+29|Ke A5|0
+30|Ke A5|0
+31|Ke A5|0
 #
-11221
-Naruto
-Kishimoto
-100
-1999
-Truyen Tranh
-1
-13|Ke 13|0
-12|Ke 12|1
-#
-12335
-Lap trinh huong doi tuong
-Ptit
+12345
+Ngon Ngu Lap Trinh
+Tran Quoc Toan
 230
-2022
+2011
 Cong Nghe
-2
-9|Ke 9|1
-10|Ke 10|1
-11|Ke 11|0
+1
+6|Ke Sach Cong Nghe|1
+7|Ke Sach Cong Nghe|0
+8|Ke Sach Cong Nghe|0
 #
-12222
-Lich su
-PTIT
-120
-2025
-Sach Giao Khoa
-3
-25|Ke SGK|1
-24|Ke SGK|1
-23|Ke SGK|1
+10012
+Nguyen Ly May Hoc
+Trinh Quoc Viet
+540
+2022
+Tham Khao
+0
+57|Ke B6|0
+58|Ke B6|0
+59|Ke B6|0
+60|Ke B6|0
+61|Ke B6|0
+62|Ke B6|0
 #
-56283
-nhap mon cong nghe
-nguyen mai kha
-144
+78921
+Nhap Mon Cong Nghe Phan Mem
+Luu Nguyen Ky Thu
+230
 2014
-hoc thuat
-0
-31|Ke sach hoc thuat|0
-30|Ke sach hoc thuat|0
-#
-12233
-Toan
-ptit
-120
-2025
 Sach Giao Khoa
 0
-16|Ke C|0
-15|Ke C|0
-14|Ke C|0
+4|Ke Sach Giao Khoa|0
+5|Ke Sach Giao Khoa|0
 #
-21342
-Tin Hoc Co So
-PTIT
-100
+10003
+Nhap Mon Java
+Pham Van Cuong
+380
+2019
+Giao Trinh
+2
+18|Ke A3|1
+19|Ke A3|0
+20|Ke A3|0
+21|Ke A3|1
+22|Ke A3|0
+23|Ke A3|0
+#
+10011
+Nhap Mon Khoa Hoc May Tinh
+Hoang Minh Tuan
+360
 2020
-Sach Giao Khoa
-1
-18|Ke SGK|0
-17|Ke SGK|1
+Giao Trinh
+0
+53|Ke B5|0
+54|Ke B5|0
+55|Ke B5|0
+56|Ke B5|0
 #
-21340
-Vat ly va thi nghiem
-Ptit
-120
-2025
-Sach Giao Khoa
+10008
+Phan Tich Thiet Ke
+Vu Thanh Tung
+370
+2019
+Giao Trinh
+0
+42|Ke B2|0
+43|Ke B2|0
+44|Ke B2|0
+#
+10009
+Toan Roi Rac
+Luong Thi Mai
+330
+2016
+Giao Trinh
+2
+45|Ke B3|1
+46|Ke B3|0
+47|Ke B3|1
+48|Ke B3|0
+#
+10007
+Tri Tue Nhan Tao
+Nguyen Huu Phuoc
+390
+2022
+Tham Khao
 1
-29|ke sgk|0
-28|ke sgk|0
-27|ke sgk|1
-26|ke sgk|0
+36|Ke B1|0
+37|Ke B1|0
+38|Ke B1|0
+39|Ke B1|1
+40|Ke B1|0
+41|Ke B1|0
+#
+12346
+Xu Ly Tin Hieu So
+Dam Huy Son
+123
+2021
+Cong Nghe
+3
+1|Ke Sach Cong Nghe|1
+2|Ke Sach Cong Nghe|1
+3|Ke Sach Cong Nghe|1
 #

@@ -211,27 +211,18 @@ void giaoDienQuanLyDauSach(DS_DauSach &dsDauSach)
             clrscr();
             if (chon == 0)
             {
-                // docDanhSachDauSachTuFile("txt\\DanhSachDauSach.txt", dsDauSach);
-                ThemDauSach(dsDauSach);
-                ghiDanhSachDauSachRaFile(dsDauSach, "txt\\DanhSachDauSach.txt");
-                gotoxy(35, 10);
-                getch();
+                ThemSach(dsDauSach);
             }
             else if (chon == 1)
             {
-                // Gọi hàm in danh sách đầu sách
-                docDanhSachDauSachTuFile("txt\\DanhSachDauSach.txt", dsDauSach);
                 InDanhSachDauSachTheoTheLoai(dsDauSach);
-                gotoxy(35, 10);
-                getch();
+                cout<<right;
+                ShowCur(false);
             }
             else if (chon == 2)
             {
-                // Gọi hàm tìm kiếm sách theo TenTen
-                docDanhSachDauSachTuFile("txt\\DanhSachDauSach.txt", dsDauSach);
                 TimSachTheoTen(dsDauSach);
-                gotoxy(35, 10);
-                getch();
+                cout<<right;
             }
             else if (chon == soCN - 1)
             {
@@ -346,7 +337,7 @@ int main()
 
     TREE_DOCGIA root = nullptr;
     read_File(root, "txt\\DanhSachDocGia.txt");
-    docDanhSachDauSachTuFile("txt\\DanhSachDauSach.txt", ds);
+    read_DauSach(ds, "txt\\DanhSachDauSach.txt");
     menu(root, ds);
     freeBST(root);
 }

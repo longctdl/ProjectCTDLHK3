@@ -259,7 +259,6 @@ void ThemDocGia(TREE_DOCGIA &root) {
                     currentPage = 0;
                 }
             } else {
-                // Người dùng hủy bằng ESC
                 ThongBao("DA HUY THAO TAC THEM DOC GIA");
             }
             XoaKhungNhapLieu();
@@ -777,7 +776,7 @@ void XoaKhuVucSuaDocGia(){
 
 bool Enter_SuaDocGia(TREE_DOCGIA &root, TREE_DOCGIA &p){
     ShowCur(true);
-    gotoxy(105, 3); cout << "THONG TIN DO GIA";
+    gotoxy(105, 3); cout << "THONG TIN DOC GIA";
 
     const int INPUT_X = 84 + string("Nhap ma the doc gia: ").length();
     string maThe;
